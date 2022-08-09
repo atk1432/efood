@@ -1,14 +1,11 @@
-a {
-    color: #333;
-    text-decoration: none;
-}
-
-.flexSpaceBetween {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .Header {
     height: 90px;
+    background-color: #fff;
+    box-shadow: 0 2px 2px #333;
+}
+
+@media (max-width: 576px) {
+    .Header {
+        height: 64px;
+    }
 }

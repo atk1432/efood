@@ -1,0 +1,22 @@
+a {
+    color: #333;
+    text-decoration: none;
+}
+
+.flexSpaceBetween {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flexEnd {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.flexStart {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
