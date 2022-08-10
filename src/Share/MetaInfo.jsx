@@ -2,7 +2,7 @@ function MetaInfo(props) {
 
     return (
         <span 
-            className="fs-5 position-absolute bg-dark text-light h-auto "
+            className="position-absolute bg-dark text-light h-auto fw-bold"
             style={{
                 left: props.left,
                 top: props.top,
@@ -12,6 +12,7 @@ function MetaInfo(props) {
                 lineHeight: '30px',
                 padding: '2px 8px',
                 borderRadius: 10,
+                fontSize: 14,
                 ...props.style
             }}
         >

@@ -10,13 +10,13 @@ function Controller() {
         var items = [
             <i className="fa-solid fa-house"></i>,
             <i className="fa-solid fa-cart-shopping"></i>,
-            <i className="fa-solid fa-ellipsis"></i>,
             <i className="fa-solid fa-newspaper"></i>,
-            <i className="fa-solid fa-phone"></i>
+            <i className="fa-solid fa-phone"></i>,
+            <i className="fa-solid fa-ellipsis"></i>
         ];
 
         var letters = [
-            'Home', 'Cart', 'More', "News", 'Phone'
+            'Home', 'Cart', 'News', 'Phone', 'More'
         ]
 
         return items.map((item, index) => {

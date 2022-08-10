@@ -29,3 +29,22 @@
     color: #333;
     border-radius: 10px;
 }
+
+@media (max-width:  576px) {
+    .Controller {
+        height: 68px;
+        width: 100%;
+        flex-direction: row;
+        bottom: 0;
+        top: unset;
+        border-right: 0;
+        border-top: 2px solid;
+        justify-content: space-around;
+        padding: 0 16px;
+    }
+
+    .ControllerItem {
+        --size:  40px;
+        font-size: 20px;
+    }
+}

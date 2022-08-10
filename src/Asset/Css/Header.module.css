@@ -1,14 +1,20 @@
 .Header {
-    height: 90px;
+    height: var(--heightHeader);
     background-color: #fff;
     box-shadow: 0 2px 2px #333;
     z-index: 99;
     position: fixed;
     width: 100%;
+    top: 0;
 }
 
 @media (max-width: 576px) {
     .Header {
-        height: 64px;
+        /*height: 64px;*/
+        --heightHeader: 64px
+    }
+
+    .Brand {
+        transform: translateX(-18px);
     }
 }
