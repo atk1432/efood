@@ -1,0 +1,31 @@
+.Controller {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    height: 100%;
+    border-right: 2px solid;
+    z-index: 1;
+    padding: 0 5px;
+}
+
+.ControllerItem {
+    --size: 60px;
+    width: var(--size);
+    height: var(--size);
+    font-size: 28px;
+    margin-bottom: 5px;
+    display: block;
+    text-align: center;
+    line-height: var(--size);
+    transition-duration: 0.2s;
+}
+
+.ControllerItem--Active,
+.ControllerItem:hover {
+    background-color: #eaeaea;
+    color: #333;
+    border-radius: 10px;
+}

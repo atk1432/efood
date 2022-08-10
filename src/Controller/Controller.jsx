@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Item from './Item';
+import styles from '../Asset/Css/Controller.module.css';
 
 
 function Controller() {
@@ -16,7 +17,7 @@ function Controller() {
         return items.map((item, index) => {
             return (
                 <li key={index}>
-                    <Item>
+                    <Item className={ styles.ControllerItem }>
                         { item }
                     </Item>
                 </li>
@@ -25,7 +26,7 @@ function Controller() {
     }
 
     return (        
-        <ul className="Controller">
+        <ul className={ styles.Controller }>
             { renderItems() }
         </ul>
     );
