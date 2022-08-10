@@ -16,7 +16,7 @@ function MetaInfo(props) {
                 ...props.style
             }}
         >
-            { props.children }
+            { props.children }            
         </span>
     );
 }

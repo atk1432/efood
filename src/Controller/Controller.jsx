@@ -8,25 +8,51 @@ function Controller() {
 
     const renderItems = () => {
         var items = [
-            <i className="fa-solid fa-house"></i>,
-            <i className="fa-solid fa-cart-shopping"></i>,
-            <i className="fa-solid fa-newspaper"></i>,
-            <i className="fa-solid fa-phone"></i>,
-            <i className="fa-solid fa-ellipsis"></i>
+            {
+                name: 'Home',
+                element: <i className="fa-solid fa-house"></i>
+            }, 
+            {
+                name: 'Cart',
+                element: <i className="fa-solid fa-cart-shopping"></i>,
+                badge: 2
+            },
+            {
+                name: 'News',
+                element: <i className="fa-solid fa-newspaper"></i>
+            },
+            {
+                name: 'Phone',
+                element: <i className="fa-solid fa-phone"></i>
+            },
+            {
+                name: 'More',
+                element: <i className="fa-solid fa-ellipsis"></i>
+            },
         ];
 
-        var letters = [
-            'Home', 'Cart', 'News', 'Phone', 'More'
-        ]
+        // var letters = [
+        //     'Home', 'Cart', 'News', 'Phone', 'More'
+        // ]
 
         return items.map((item, index) => {
             return (
                 <li key={index}>
                     <Item 
                         className={ styles.ControllerItem }
-                        metaInfo={ letters[index] }
+                        metaInfo={ item.name }
                     >
-                        { item }
+                        { item.element }
+                        { item.badge ? 
+                            <span 
+                                className={
+                                    `badge bg-primary position-absolute rounded-circle ${styles.ControllerItem__Badge}`
+                                }
+                            >
+                                { item.badge }
+                            </span> :
+                            <></>
+                        }
                     </Item>
                 </li>
             );

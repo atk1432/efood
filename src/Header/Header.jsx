@@ -17,7 +17,7 @@ function Header() {
 					<Brand />
 				</div>
 				<div className={
-                    "col col-2 h-100 " + shares.flexEnd
+                    "col col-2 h-100 " + shares.flexCenter
                 }>
 					<User />
 				</div>

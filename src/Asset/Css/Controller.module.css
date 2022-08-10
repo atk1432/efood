@@ -1,11 +1,7 @@
 .Controller {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     position: fixed;
-    top: 0;
-    height: 100%;
+    bottom: 0;
+    height: calc(100% - var(--heightHeader));
     border-right: 2px solid;
     z-index: 1;
     padding: 0 5px;
@@ -20,7 +16,18 @@
     display: block;
     text-align: center;
     line-height: var(--size);
-    transition-duration: 0.2s;
+    transition: background-color 0.2s linear;
+    position: relative;
+}
+
+.ControllerItem__Badge {
+    font-size: 12px;
+    right: 4px;
+    top: 4px;
+}
+
+.ControllerItem:first-child {
+    margin-top: 10px;
 }
 
 .ControllerItem--Active,
@@ -32,6 +39,10 @@
 
 @media (max-width:  576px) {
     .Controller {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         height: 68px;
         width: 100%;
         flex-direction: row;
@@ -46,5 +57,12 @@
     .ControllerItem {
         --size:  40px;
         font-size: 20px;
+    }
+}
+
+@media (max-height: 434px) {
+    .Controller {
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
 }

@@ -16,6 +16,12 @@
     align-items: center;
 }
 
+.flexCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 @keyframes showMeta {
     from {
         transform: scale(0);
