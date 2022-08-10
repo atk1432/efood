@@ -17,12 +17,19 @@ function Item(props) {
             onMouseEnter={ hover }
             onMouseLeave={ hover }
             className={ 
-                `cursor-pointer ` + props.className ?? ""
+                `position-relative ` + props.className ?? ""
         }>
             { props.children }
             { hiddenMeta ? <></> :
-                <MetaInfo>
-                    hello
+                <MetaInfo 
+                    left={65} 
+                    top={12}
+                    style={{
+                        transformOrigin: 'left',
+                        animation: `${shares.showMeta} 0.1s`
+                    }}
+                >
+                    { props.metaInfo }
                 </MetaInfo>
             }
         </a>
