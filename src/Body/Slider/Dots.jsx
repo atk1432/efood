@@ -1,15 +1,19 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, memo } from 'react'
 import styles from '../../Asset/Css/Body.module.css';
 
 
 function Dots(props) {
+
+    const [ active, setActive ] = useState(0);
 
     const render = () => {
         var output = [];
 
         for (var i = 0; i < props.number; i++) {
             output.push(
-                <i key={i} className="fa-solid fa-circle"></i>
+                active === i ?
+                    <i key={i} className="fa-solid fa-circle"></i> :
+                    <i key={i} className="fa-regular fa-circle"></i>
             );
         }
 
@@ -38,4 +42,4 @@ function Dots(props) {
     );
 }
 
-export default Dots;
+export default memo(Dots);

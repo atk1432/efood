@@ -1,10 +1,12 @@
+
 import styles from '../../Asset/Css/Body.module.css';
 
 
 function Angle(props) {
 
     return (
-        <i  
+        <i 
+            onClick={ props.onClick }
             style={{ 
                 top: props.top,
                 left: props.left,

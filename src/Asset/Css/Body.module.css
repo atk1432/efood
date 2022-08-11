@@ -17,6 +17,8 @@
 .Angle {
     --size: 50px;
     font-size: var(--size);
+    cursor: pointer;
+    z-index: 3;
 }
 
 .Dots {
@@ -24,8 +26,19 @@
     color: #fff;
 }
 
+.Dots i {
+    margin-right: 10px;
+    color: #333;
+    cursor: pointer;
+}
+
 .Banners {
     display: flex;
+    position: relative;
+    transition: left .2s;
+}
+
+.BannersContainer {
     overflow: hidden;
 }
 
