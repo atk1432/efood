@@ -1,7 +1,10 @@
+import styles from '../../Asset/Css/Body.module.css';
+
+
 function Banner(props) {
 
     return (
-        <img src={props.src} atl="" />
+        <img className={styles.Banner} src={props.src} atl="" />
     );
 }
 

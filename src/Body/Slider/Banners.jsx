@@ -1,4 +1,5 @@
 import Banner from './Banner';
+import styles from '../../Asset/Css/Body.module.css';
 
 
 function Banners() {
@@ -12,7 +13,7 @@ function Banners() {
 
 
     return (
-        <div className="Banners">
+        <div className={ styles.Banners }>
             { 
                 banners.map((banner, index) => {
                     return <Banner key={index} src={ origin + banner } />

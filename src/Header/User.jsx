@@ -8,7 +8,7 @@ function User() {
     const [ isLogin, setIsLogin ] = useState(false);
 
     return (
-        <a href="">
+        <a href="" className="me-3">
             { isLogin ? 
                 <Image 
                     width="60px"

@@ -5,6 +5,7 @@ import styles from '../Asset/Css/Controller.module.css';
 
 function Controller() {
 
+    const [ active, setActive ] = useState(0);
 
     const renderItems = () => {
         var items = [
@@ -31,15 +32,14 @@ function Controller() {
             },
         ];
 
-        // var letters = [
-        //     'Home', 'Cart', 'News', 'Phone', 'More'
-        // ]
-
         return items.map((item, index) => {
             return (
                 <li key={index}>
                     <Item 
-                        className={ styles.ControllerItem }
+                        className={ 
+                            styles.ControllerItem + ' ' + 
+                            (index === active ? styles['ControllerItem--Active'] : '')
+                        }
                         metaInfo={ item.name }
                     >
                         { item.element }

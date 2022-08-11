@@ -4,5 +4,31 @@
 }
 
 .Slider {
-    
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.Angle,
+.Dots {
+    position: absolute;
+}
+
+.Angle {
+    --size: 50px;
+    font-size: var(--size);
+}
+
+.Dots {
+    font-size: 20px;
+    color: #fff;
+}
+
+.Banners {
+    display: flex;
+    overflow: hidden;
+}
+
+.Banner {
+    width: 100%;
 }
