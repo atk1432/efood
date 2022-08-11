@@ -19,6 +19,8 @@
     font-size: var(--size);
     cursor: pointer;
     z-index: 3;
+    color: #fff;
+    opacity: 0.6;
 }
 
 .Dots {
@@ -28,14 +30,15 @@
 
 .Dots i {
     margin-right: 10px;
-    color: #333;
+    color: #fff;
     cursor: pointer;
+    opacity: 0.6;
 }
 
 .Banners {
     display: flex;
     position: relative;
-    transition: left .2s;
+    transition: left .5s;
 }
 
 .BannersContainer {
@@ -44,4 +47,11 @@
 
 .Banner {
     width: 100%;
+}
+
+@media (max-width:  576px) {
+    .Body {
+        margin-left: 0;
+        margin-top: var(--heightHeader);
+    }
 }

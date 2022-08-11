@@ -1,5 +1,6 @@
 import { useReducer, useEffect, memo } from 'react';
 import Banner from './Banner';
+import Dots from './Dots';
 import styles from '../../Asset/Css/Body.module.css';
 
 
@@ -25,7 +26,7 @@ const reducer = (state, action) => {
             var coor = state.index - 1;
             return { index: coor };
         default:
-            return state;
+            return { index: action.index };
     }
 }
 
@@ -41,23 +42,28 @@ function Banners(props) {
         props.setDispatch([ dispatch ]);
     }, []);
 
-    console.log(banner);
-
     return (
-        <div className={ styles.BannersContainer }>
-            <div 
-                className={ styles.Banners }
-                style={{
-                    left: `calc(100% * -${banner.index})`
-                }}
-            >
-                { 
-                    banners.map((banner, index) => {
-                        return <Banner key={index} src={ origin + banner } />
-                    })
-                }
+        <>
+            <div className={ styles.BannersContainer }>
+                <div 
+                    className={ styles.Banners }
+                    style={{
+                        left: `calc(100% * -${banner.index})`
+                    }}
+                >
+                    { 
+                        banners.map((banner, index) => {
+                            return <Banner key={index} src={ origin + banner } />
+                        })
+                    }
+                </div>
             </div>
-        </div>
+            <Dots 
+                number={ banners.length - 2  }
+                active={ banner.index - 1 }
+                dispatch={ dispatch }
+            />
+        </>
     );
 }
 

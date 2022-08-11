@@ -1,8 +1,10 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, createContext } from 'react'
 import Angle from './Angle';
-import Dots from './Dots';
 import Banners from './Banners';
 import styles from '../../Asset/Css/Body.module.css';
+
+
+const BannersContext = createContext();
 
 
 function Slider() {
@@ -19,8 +21,9 @@ function Slider() {
                     dispatch[0]({ type: 'left' }) 
                 }}  
             />
-            <Banners setDispatch={setDispatch} />
-            <Dots number={4} />           
+            <Banners 
+                setDispatch={setDispatch} 
+            />
             <Angle 
                 direction='right' 
                 right={10}

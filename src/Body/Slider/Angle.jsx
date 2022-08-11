@@ -1,4 +1,4 @@
-
+import { memo } from 'react';
 import styles from '../../Asset/Css/Body.module.css';
 
 
@@ -21,4 +21,4 @@ function Angle(props) {
     );
 }
 
-export default Angle;
+export default memo(Angle);
