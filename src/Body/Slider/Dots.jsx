@@ -1,4 +1,4 @@
-import { useRef, useEffect, memo } from 'react'
+import { useRef, useEffect, useContext, memo } from 'react'
 import styles from '../../Asset/Css/Body.module.css';
 
 
@@ -9,9 +9,11 @@ function Dots(props) {
         return Array(props.number).fill().map((_, i) => 
             <i 
                 key={i}
-                onClick={() => {
-                    if (i !== props.active)
+                onClick={() => {    
+                    if (i !== props.active) {
+                        clearInterval(props.interval.current);
                         props.dispatch({ index: i + 1 });
+                    }
                 }}
                 className={
                     `${ props.active === i ? 'fa-solid' : 'fa-regular' } fa-circle`
@@ -25,7 +27,7 @@ function Dots(props) {
 
     useEffect(() => {
         element.current.style.left = `calc(50% - ${element.current.offsetWidth / 2}px)`;
-    }, [element.current])
+    }, [])
 
     return (
         <div 

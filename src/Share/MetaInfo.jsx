@@ -8,7 +8,7 @@ function MetaInfo(props) {
                 top: props.top,
                 right: props.right,
                 bottom: props.bottom,
-                zIndex: 3,
+                zIndex: 50,
                 lineHeight: '30px',
                 padding: '2px 8px',
                 borderRadius: 10,

@@ -38,7 +38,7 @@
 .Banners {
     display: flex;
     position: relative;
-    transition: left .5s;
+    transition: left 1s ease;
 }
 
 .BannersContainer {
