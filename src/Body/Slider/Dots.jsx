@@ -11,7 +11,6 @@ function Dots(props) {
                 key={i}
                 onClick={() => {    
                     if (i !== props.active) {
-                        clearInterval(props.interval.current);
                         props.dispatch({ index: i + 1 });
                     }
                 }}

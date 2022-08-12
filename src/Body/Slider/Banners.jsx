@@ -1,4 +1,4 @@
-import { useReducer, useRef, useEffect, memo } from 'react';
+import { useReducer, useState, useRef, useEffect, memo } from 'react';
 import BannersContainer from './BannersContainer';
 import Dots from './Dots';
 import styles from '../../Asset/Css/Body.module.css';
@@ -13,6 +13,8 @@ const banners = [
 ];
 
 var disable = false;
+
+const sensitive = 30;
 
 const reducer = (state, action) => {
 
@@ -57,17 +59,36 @@ const dotsActive = (active) =>  {
 function Banners(props) {
 
     const [ banner, dispatch ] = useReducer(reducer, initialReducer);
-    // const [ noTransition, setNoTransition ] = useState(false);
+    const [ reRender, setReRender ] = useState(false);
+    const interval = useRef();
     const noTransition = useRef(false);
+
+
+    // For process mouse
+    const hold = useRef(false);
+    const clientX = useRef();
+    const bannersElement = useRef();
+
 
     useEffect(() => {
         props.setDispatch([ dispatch ]);
 
-        props.interval.current = setInterval(() => {
-            dispatch({ type: 'right' });
-        }, 5000);
 
     }, []);
+
+    // useEffect(() => {
+    //     clearInterval(interval.current);
+
+    //     interval.current = setInterval(() => {
+    //         dispatch({ type: 'right' });
+    //     }, 5000);
+    // });
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         bannersElement.current.style.transition = 'left 1s ease';
+    //     }, 500)
+    // }, [clientX.current])
 
     useEffect(() => {
         noTransition.current = false;
@@ -77,6 +98,7 @@ function Banners(props) {
         <>
             <div className={ styles.BannersContainer }>
                 <div 
+                    ref={ bannersElement }
                     className={ 
                         styles.Banners + ' ' + (
                             noTransition.current ? 'notransition' : ''
@@ -100,6 +122,38 @@ function Banners(props) {
                             }
                             
                         } 
+                    }}
+                    onMouseDown={(e) => {
+                        hold.current = true;
+                        clientX.current = e.clientX;
+                    }}
+                    onMouseUp={(e) => {
+                        hold.current = false;
+                        var coor = e.clientX - clientX.current;
+
+                        if (coor > sensitive) {
+                            dispatch({ type: 'left' });
+                        } else if (coor < -1 * sensitive) {
+                            dispatch({ type: 'right' });
+                        } else {
+                            // dispatch({ index: banner.index });
+                            // setReRender(!reRender);
+                            bannersElement.current.style.left = 
+                                `calc(100% * -${banner.index})`;
+                        }
+
+                        bannersElement.current.style.transition = 'left 1s ease';
+                        // bannersElement.current.style.transform = '';
+                    }}
+                    onMouseMove={(e) => {
+                        if (hold.current) {
+                            // bannersElement.current.style.transform = 
+                            //     `translateX( ${e.clientX - clientX.current}px )`;
+                            // console.log(e.clientX - clientX.current)
+                            bannersElement.current.style.transition = ''
+                            bannersElement.current.style.left = 
+                                `calc(100% * -${banner.index} + ${e.clientX - clientX.current}px )`;
+                        }
                     }}
                 >
                     <BannersContainer banners={banners} />

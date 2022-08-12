@@ -12,6 +12,7 @@
 .Angle,
 .Dots {
     position: absolute;
+    color: #333;
 }
 
 .Angle {
@@ -38,7 +39,7 @@
 .Banners {
     display: flex;
     position: relative;
-    transition: left 1s ease;
+    /*transition: left 1s ease;*/
 }
 
 .BannersContainer {
