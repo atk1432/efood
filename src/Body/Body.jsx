@@ -1,7 +1,9 @@
 import ContainerXxl from '../Share/ContainerXxl';
 import ContainerMd from '../Share/ContainerMd';
+import ContainerFluid from '../Share/ContainerFluid';
 import Slider from './Slider/Slider';
 import Section from './Section/Section';
+import Footer from './Footer/Footer';
 import styles from '../Asset/Css/Body.module.css';
 
 
@@ -17,9 +19,12 @@ function Body() {
                     <Slider />
                 </div>
             </ContainerXxl>
-            <ContainerMd>
+            <ContainerMd classRow={'gy-5'}>
                 <Section />
             </ContainerMd>
+            <div className={'w-100 bg-dark py-5 mt-5 ' + styles.Footer ?? ''}>
+                <Footer />
+            </div>
         </div>
     );
 }

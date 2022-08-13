@@ -50,6 +50,10 @@
     width: 100%;
 }
 
+.ProductInfo__Name:hover {
+    text-decoration: underline;
+}
+
 .ProductInfo {
     margin: 12px 0;
     padding: 0 12px;
@@ -68,5 +72,9 @@
     .Body {
         margin-left: 0;
         margin-top: var(--heightHeader);
+    }
+
+    .Footer {
+        margin-bottom: 68px;
     }
 }

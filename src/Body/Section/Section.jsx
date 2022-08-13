@@ -7,7 +7,7 @@ function Section() {
     return (
         <>
             <div className="col col-12">
-                <Text size={30} weight={500} mt={30} mb={20} display='block'>
+                <Text size={30} weight={500} mt={30} display='block'>
                     Top product
                 </Text>
             </div>

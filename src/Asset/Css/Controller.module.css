@@ -5,6 +5,7 @@
     border-right: 2px solid;
     z-index: 50;
     padding: 0 5px;
+    background-color: #fff;
 }
 
 .ControllerItem {
