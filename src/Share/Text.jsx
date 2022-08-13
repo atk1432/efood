@@ -8,7 +8,9 @@ function Text(props) {
                 fontWeight: props.weight,
                 display: props.display,
                 marginTop: props.mt,
-                marginBottom: props.mb
+                marginBottom: props.mb,
+                opacity: props.opacity,
+                color: props.color
             }}
         >
             { props.children }

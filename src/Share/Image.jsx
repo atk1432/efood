@@ -7,7 +7,8 @@ function Image(props) {
         <img 
             style={{
                 width: props.width,
-                height: props.height
+                height: props.height,
+                borderRadius: props.radius
             }}
             src={props.src}
             className={props.className}
