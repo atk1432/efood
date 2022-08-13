@@ -1,7 +1,7 @@
 import Text from '../../Share/Text';
 
 
-function Link(props) {
+function LinkFooter(props) {
 
     return (
         <a href={ props.href ?? '' }>
@@ -16,4 +16,4 @@ function Link(props) {
     )
 }
 
-export default Link;
+export default LinkFooter;

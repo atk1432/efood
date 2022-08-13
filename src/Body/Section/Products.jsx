@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Product from './Product';
+import ProductLoading from './ProductLoading';
 
 
 function Products() {
@@ -52,24 +53,44 @@ function Products() {
         }
     ]);
 
+    const [ loaded, setLoaded ] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+
+            setLoaded(true);
+
+        }, 3000);
+    }, [])
+
     return (
-        <>
-            {dataset.map((data, index) => 
-                <div 
-                    key={index} 
-                    className="col col-xxl-3 col-xl-3 col-lg-4 col-6"
-                >
-                    <Product
-                        name={ data.name }
-                        types={ data.types }
-                        image={ data.image }
-                        rate={ data.rate }
-                        time={ data.time }
-                        distance={ data.distance }
-                        price={ data.price }
-                    />
-                </div>
-            )}
+        <>  
+            {loaded ?
+                dataset.map((data, index) => 
+                    <div 
+                        key={index} 
+                        className="col col-xxl-3 col-xl-3 col-lg-4 col-6"
+                    >
+                        <Product
+                            name={ data.name }
+                            types={ data.types }
+                            image={ data.image }
+                            rate={ data.rate }
+                            time={ data.time }
+                            distance={ data.distance }
+                            price={ data.price }
+                        /> 
+                    </div>
+                ) :
+                Array(4).fill(0).map((item, index) => 
+                    <div 
+                        key={index} 
+                        className="col col-xxl-3 col-xl-3 col-lg-4 col-6"
+                    >
+                        <ProductLoading />
+                    </div>
+                )
+            }
         </>
     );
 }

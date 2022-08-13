@@ -1,5 +1,5 @@
 import ContainerMd from '../../Share/ContainerMd';
-import Link from './Link';
+import LinkFooter from './LinkFooter';
 
 
 function Footer() {
@@ -7,19 +7,19 @@ function Footer() {
     return (
         <ContainerMd classRow={'gy-5'}>
             <div className="col col-xl-3 col-lg-4 col-6">
-                <Link>Về efood</Link>
-                <Link>Blog</Link>
+                <LinkFooter>Về efood</LinkFooter>
+                <LinkFooter>Blog</LinkFooter>
             </div>
             <div className="col col-xl-3 col-lg-4 col-6">
-                <Link>Dịch vụ</Link>
+                <LinkFooter>Dịch vụ</LinkFooter>
             </div>
             <div className="col col-xl-3 col-lg-4 col-6">
-                <Link>Trung tâm hỗ trợ</Link>
-                <Link>Câu hỏi thường gặp</Link>
+                <LinkFooter>Trung tâm hỗ trợ</LinkFooter>
+                <LinkFooter>Câu hỏi thường gặp</LinkFooter>
             </div>
             <div className="col col-xl-3 col-lg-4 col-6">
-                <Link>Facebook</Link>
-                <Link>Instagram</Link>
+                <LinkFooter>Facebook</LinkFooter>
+                <LinkFooter>Instagram</LinkFooter>
             </div>
         </ContainerMd>
     );
