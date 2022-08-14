@@ -5,6 +5,7 @@ import Text from '../../Share/Text';
 import Price from '../Section/Price';
 import styles from '../../Asset/Css/Body.module.css';
 import Button from '../../Share/Button';
+import StarsReview from './StarsReview';
 
 
 // For get 1 data
@@ -15,7 +16,7 @@ function Product() {
         name: 'Phở Gà Ngon 47',
         types: [ 'Bún', 'Phở', 'Cháo, Tạp Dế Bạc' ],
         image: 'https://d1sag4ddilekf6.azureedge.net/compressed/merchants/5-CZBYRP6KRXJCEN/hero/f6f3e83b389a4355a7e9072a55cd0fbc_1659913137408522559.jpg',
-        rate: 4.4,
+        rate: 4.5,
         time: 25, // Minute 
         distance: 0.5, // Km
         price: 25000
@@ -41,9 +42,10 @@ function Product() {
                     </Text>
                     <div style={{ margin: '12px 0' }}>
                         <Text className={styles.ProductInfo__Rate}>
-                            <i className="fa-solid fa-star text-warning"></i>
+                            <StarsReview rate={ data.rate } />
                             { data.rate }
                         </Text>
+                        <br />
                         <Text 
                             className={styles.ProductInfo__Rate}
                             opacity={0.8}
