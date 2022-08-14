@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import Item from './Item';
 import styles from '../Asset/Css/Controller.module.css';
 
@@ -66,4 +66,4 @@ function Controller() {
     );
 }
 
-export default Controller;
+export default memo(Controller);

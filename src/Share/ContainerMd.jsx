@@ -3,7 +3,9 @@ import React from 'react';
 
 function ContainerMd(props) {
     return (
-        <div className="container-md h-100">
+        <div className=
+            {"container-md h-100 " + props.className} 
+        >
             <div className={
                 "row h-100 " + (props.classRow ?? "")
             }>

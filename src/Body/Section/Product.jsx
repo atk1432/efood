@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Image from '../../Share/Image';
 import Text from '../../Share/Text';
 import Price from './Price';
@@ -8,12 +9,13 @@ function Product(props) {
 
     return (
         <div className={
-            styles.Product
+            'row'
         }>
-            <Image width={'100%'} radius={10} src={ props.image } />
+            <Image width={'100%'} radius={16} src={ props.image } />
             <div className={styles.ProductInfo}>
-                <a href="">
-                    <Text className={
+                <Link to={ `/product/${props.id}` }>
+                    <Text 
+                        className={
                             styles.ProductInfo__Name + ' text-truncate'
                         } 
                         display='block' 
@@ -22,7 +24,7 @@ function Product(props) {
                     >
                         { props.name }
                     </Text>
-                </a>
+                </Link>
                 <Text display="block" opacity={0.7} mt={6} size={15}>
                     { props.types.join(' - ') }
                 </Text>

@@ -5,9 +5,10 @@ function Price(props) {
 
     return (
         <Text
-            size={22}
+            size={ props.size ?? 22 }
             color={'#ff9e0d'}
             weight={900}
+            display='block'
         >
             { props.children }
         </Text>

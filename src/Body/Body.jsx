@@ -1,17 +1,21 @@
 import {
-    SliderContainer, 
-    SectionContainer, 
     FooterContainer ,
 } from './Container';
+import { Outlet } from 'react-router-dom';
+import ContainerMd from '../Share/ContainerMd';
 import styles from '../Asset/Css/Body.module.css';
 
 
-function Body() {
+function Body(props) {
 
     return (
         <div className={styles.Body}>
-            <SliderContainer />
-            <SectionContainer />
+            {props.container ?
+                <ContainerMd className="container-body">
+                    <Outlet />
+                </ContainerMd> :
+                <Outlet />
+            }
             <FooterContainer />
         </div>
     );

@@ -1,5 +1,4 @@
-import React from 'react';
-// import ContainerMd from '../Share/ContainerMd';
+import { memo } from 'react';
 import ContainerFluid from '../Share/ContainerFluid';
 import styles from '../Asset/Css/Header.module.css';
 import shares from '../Asset/Css/Share.module.css';
@@ -28,4 +27,4 @@ function Header() {
 }
 
 
-export default Header;
+export default memo(Header);

@@ -53,15 +53,15 @@ function Products() {
         }
     ]);
 
-    const [ loaded, setLoaded ] = useState(false);
+    const [ loaded, setLoaded ] = useState(true);
 
-    useEffect(() => {
-        setTimeout(() => {
+    // useEffect(() => {
+    //     setTimeout(() => {
 
-            setLoaded(true);
+    //         setLoaded(true);
 
-        }, 3000);
-    }, [])
+    //     }, 3000);
+    // }, [])
 
     return (
         <>  
@@ -72,6 +72,7 @@ function Products() {
                         className="col col-xxl-3 col-xl-3 col-lg-4 col-6"
                     >
                         <Product
+                            id={ index }
                             name={ data.name }
                             types={ data.types }
                             image={ data.image }
