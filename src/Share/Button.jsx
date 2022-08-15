@@ -15,7 +15,8 @@ function Button(props) {
                 padding: props.padding ?? '10px 12px',
                 fontWeight: props.weight ?? 900,
                 borderRadius: props.br ?? 10,
-                display: props.display ?? 'inline-block'
+                display: props.display ?? 'inline-block',
+                border: props.border
             }}
             to={ props.to ?? '#' }
         >

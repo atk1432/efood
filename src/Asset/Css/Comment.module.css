@@ -1,0 +1,9 @@
+.CommentContent__InteractionButton {
+    background-color: #fff;
+    color: #333;
+    padding: 4px 12px;
+    font-size: 14px;
+    border-radius: 100px;
+    margin-right: 10px;
+    transition: color .2s, background-color .1s;
+}
