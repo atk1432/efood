@@ -10,8 +10,10 @@ function Text(props) {
                 marginTop: props.mt,
                 marginBottom: props.mb,
                 opacity: props.opacity,
-                color: props.color
+                color: props.color,
+                overflow: props.overflow
             }}
+            onClick={props.onClick}
         >
             { props.children }
         </span>

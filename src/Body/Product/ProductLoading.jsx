@@ -1,14 +1,7 @@
-import { Link } from 'react-router-dom';
-import Image from '../../Share/Image';
-import Text from '../../Share/Text';
-import Price from '../Section/Price';
-import styles from '../../Asset/Css/Body.module.css';
-import Button from '../../Share/Button';
-import StarsReview from './StarsReview';
+import styles from '../../Share/Body.module.css';
 
 
-// For get 1 data
-function Product(props) {
+function ProductLoading() {
 
     const data = props.data;
 
@@ -71,5 +64,3 @@ function Product(props) {
         </>
     );
 }
-
-export default Product;
