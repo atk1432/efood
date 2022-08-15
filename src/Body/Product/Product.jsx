@@ -63,7 +63,10 @@ function Product(props) {
                         ).format( data.price )}
                     </Price>
                     <Button className='mt-3'>
-                        <i className="fa-solid fa-cart-shopping me-2"></i>
+                        <i 
+                            className="fa-solid fa-cart-shopping me-2"
+                            ref={props._ref}
+                        ></i>
                         Thêm vào giỏ hàng
                     </Button>
                 </div>

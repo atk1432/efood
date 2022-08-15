@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Product from './Product';
-import ProductLoading from '../Section/ProductLoading';
+import ProductLoading from './/ProductLoading';
 import Description from './Description';
+import Comments from './Comments';
 
 
 function ProductContainer() {
@@ -12,7 +13,7 @@ function ProductContainer() {
         name: 'Phở Gà Ngon 47',
         types: [ 'Bún', 'Phở', 'Cháo, Tạp Dế Bạc' ],
         image: 'https://d1sag4ddilekf6.azureedge.net/compressed/merchants/5-CZBYRP6KRXJCEN/hero/f6f3e83b389a4355a7e9072a55cd0fbc_1659913137408522559.jpg',
-        rate: 4.5,
+        rate: 3.5,
         time: 25, // Minute 
         distance: 0.5, // Km
         price: 25000,
@@ -32,18 +33,25 @@ function ProductContainer() {
             I would be having in school!"
     });
 
-    const [ loaded, setLoaded ] = useState(false);
+    const [ loaded, setLoaded ] = useState(true);
+    const buttonElement = useRef();
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setLoaded(true);
+    //     }, 3000)
+    // }, [])
 
     return (
-        <>
-            {loaded ? 
-                <Product data={data} /> :
-                // <ProductLoading />
-            }
-            <Description>
-                { data.description }
-            </Description>
-        </>
+        loaded ? 
+            <>
+                <Product data={data} _ref={buttonElement} /> 
+                <Description _ref={buttonElement}>
+                    { data.description }
+                </Description> 
+                <Comments />
+            </> :
+            <ProductLoading />
     )
 }
 

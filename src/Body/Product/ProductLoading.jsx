@@ -1,66 +1,54 @@
-import styles from '../../Share/Body.module.css';
+import Image from '../../Share/Image'; 
+import Text from '../../Share/Text';
+import styles from '../../Asset/Css/Body.module.css';
 
 
 function ProductLoading() {
 
-    const data = props.data;
-
     return (
         <>
-            <div className="col col-md-6 col-12 mb-4">
-                <Image width={'100%'} radius={16} src={ data.image } />
+            <div className="col col-md-6 col-12 mb-4 placeholder-glow">
+                <Image 
+                    width={'100%'}
+                    height={240}
+                    className="placeholder"
+                />
             </div>
-            <div className="col col-md-6 col-12">
+            <div className="col col-md-6 col-12 placeholder-glow">
                 <div className={styles.ProductInfo + ' m-0 p-0'}>
                     <Text 
                         display='block' 
                         size={34} 
                         weight={600}
+                        className="placeholder w-75"
                     >
-                        { data.name }
                     </Text>
-                    <Text display="block" opacity={0.7} mt={6} size={18}>
-                        { data.types.join(' - ') }
+                    <Text 
+                        display="block" 
+                        mt={6} 
+                        size={18} 
+                        className="placeholder w-50"
+                    >
                     </Text>
                     <div style={{ margin: '12px 0' }}>
-                        <Text className={styles.ProductInfo__Rate}>
-                            <StarsReview rate={ data.rate } />
-                            { data.rate }
-                        </Text>
-                        <br />
-                        <Text 
-                            className={styles.ProductInfo__Rate}
-                            opacity={0.8}
-                        >
-                            <i className="fa-regular fa-clock"></i>
-                            { data.time } phút
-                        </Text>
-                        <Text 
-                            className={styles.ProductInfo__Rate}
-                            opacity={0.8}
-                        >
-                            <i 
-                                className="fa-solid fa-circle"
-                                style={{
-                                    fontSize: 7,
-                                    transform: 'translateY(-3px)'
-                                }}
-                            ></i>
-                            { data.distance } km
+                        <Text className='placeholder w-25'>
                         </Text>
                     </div>
-                    <Price size={34}>
-                        {new Intl.NumberFormat(
-                            'vi-VI', 
-                            { style: 'currency', currency: 'VND' }
-                        ).format( data.price )}
-                    </Price>
-                    <Button className='mt-3'>
-                        <i className="fa-solid fa-cart-shopping me-2"></i>
-                        Thêm vào giỏ hàng
-                    </Button>
+                    <div className='placeholder' style={{
+                        width: '35%',
+                        height: 30
+                    }}>
+                    </div>
+                    <br/>
+                    <div className='placeholder mt-2' style={{
+                        width: '45%',
+                        height: 30
+                    }}>
+                    </div>
                 </div>
             </div>
         </>
     );
 }
+
+export default ProductLoading;

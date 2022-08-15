@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { Header, Body} from '../../Share/Container';
 import Text from '../../Share/Text';
 
 
@@ -8,10 +9,10 @@ function Description(props) {
 
     return (
         <>
-            <div className="col col-12 mt-5">
+            <Header>
                 <Text weight={900} size={22}>Mô tả</Text>
-            </div>
-            <div className="col col-12 mt-2 position-relative" style={
+            </Header>
+            <Body className="position-relative" style={
                 !more ? {
                     maxHeight: 100,
                     overflow: 'hidden'
@@ -38,7 +39,11 @@ function Description(props) {
                 >
                     <Text 
                         className="bg-light cursor-pointer"
-                        onClick={() => setMore(!more)}
+                        onClick={() => {
+                            setMore(!more);
+                            if (more)
+                                props._ref.current.scrollIntoView()
+                        }}
                     >
                         {!more ?
                             <>
@@ -52,7 +57,7 @@ function Description(props) {
                         }
                     </Text> 
                 </div>
-            </div>
+            </Body>
         </>
     );
 }
