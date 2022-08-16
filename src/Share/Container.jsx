@@ -15,7 +15,7 @@ function Body(props) {
 
     return (
         <div 
-            className={"col col-12 mt-2 " + props.className ?? ''}
+            className={"col col-12 mt-2 " + (props.className ?? '') }
             style={props.style}
         >
             { props.children }
