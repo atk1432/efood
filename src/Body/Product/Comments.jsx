@@ -53,23 +53,44 @@ function ButtonInteractions()  {
     );
 }
 
-function CommentResponse() {
+function CommentResponse(props) {
+
+    const [ show, setShow ] = useState(false);
+
+    // console.log(props.response);
 
     return (
-        <div className="CommentContent__Response mt-3 cursor-pointer">
-            <Text weight={900}>
-                <i className="fa-solid fa-angle-down me-2"></i>
-                8 phản hồi
+        <div className="CommentContent__Response my-3 cursor-pointer">
+            <Text 
+                weight={900}
+                onClick={() => setShow(!show)}
+                display='inline-block'
+            >
+                {show ? 
+                    <i className="fa-solid fa-angle-up me-2"></i> :
+                    <i className="fa-solid fa-angle-down me-2"></i>
+                }
+                { props.amount } phản hồi
             </Text>
+            {show ?
+                props.response.map((comment, index) => 
+                    <Comment
+                        key={ index }
+                        name={ comment.name }
+                        comment={ comment.comment }
+                        response={ comment.response }
+                    />
+                ) : <></>
+            }
         </div>
     );
 }
 
 
-function Comment() {
+function Comment(props) {
 
     return (
-        <div className="Comment d-flex">
+        <div className="Comment my-4 d-flex">
             <Image
                 width={45}
                 height={45}
@@ -77,7 +98,9 @@ function Comment() {
             />
             <div className="CommentContent ms-3">
                 <div className="CommentContent__User">
-                    <Text weight={900} className="me-2">User</Text>
+                    <Text weight={900} className="me-2">
+                        { props.name }
+                    </Text>
                     <Text size={14} opacity={0.6} className="me-2">3 tháng trước</Text>
                 </div>
                 <div className="CommentContent__Review">
@@ -87,10 +110,7 @@ function Comment() {
                     </Text>
                 </div>
                 <div className="CommentContent__Info">
-                    <div>This is a comment</div>
-                    <div>This is a comment</div>
-                    <div>This is a comment</div>
-                    <div>This is a comment</div>
+                    <div>{ props.comment }</div>
                 </div>
                 <div className="CommentContent__Interaction mt-3 d-flex"> 
                     <ButtonInteractions />
@@ -98,12 +118,12 @@ function Comment() {
                         Phản hồi
                     </span>
                 </div>
-                <div className="CommentContent__Response mt-3 cursor-pointer">
-                    <Text weight={900}>
-                        <i className="fa-solid fa-angle-down me-2"></i>
-                        8 phản hồi
-                    </Text>
-                </div>
+                {props.response.length !== 0 ?  
+                    <CommentResponse 
+                        amount={props.response.length} 
+                        response={props.response}
+                    /> : <></>
+                }
             </div>
         </div>
     );
@@ -112,13 +132,44 @@ function Comment() {
 
 function Comments() {
 
+    const [ comments, setComments ] = useState([
+        {
+            name: 'User',
+            comment: 'This is a comment!',
+            response: [
+                {
+                    name: 'Response',
+                    comment: 'This is a comment!',
+                    response: []
+                },
+                {
+                    name: 'Cứt',
+                    comment: 'This is a comment!',
+                    response: []
+                }
+            ]
+        },
+        {
+            name: 'Yasuo',
+            comment: 'This is a comment!',
+            response: []
+        }
+    ]);
+
     return (
         <>
             <Header>
                 <Text weight={900} size={22}>Bình luận</Text>
             </Header>
             <Body className="mt-4">
-                <Comment />
+                {comments.map((comment, index) => 
+                    <Comment 
+                        key={ index }
+                        name={ comment.name }
+                        comment={ comment.comment }
+                        response={ comment.response }
+                    />
+                )}
             </Body>
         </>
     );
