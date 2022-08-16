@@ -144,6 +144,47 @@ function Comment(props) {
 }
 
 
+function CommentInput(props) {
+
+    const [ focus, setFocus ] = useState(false);
+
+    const doNotFocus = () => {
+        setFocus(false);
+        window.removeEventListener('click', doNotFocus);
+    }
+
+    return (
+        <>
+            <div 
+                className={styles.CommentInput}
+                style={focus ? {
+                    marginTop: 5
+                } : {} }
+                onClick={(e) => {
+                    e.stopPropagation();
+                    if (!focus) {
+                        window.addEventListener('click', doNotFocus);
+                        setFocus(true);
+                    }
+                }}
+            >
+                { !focus ? 'Viết bình luận' : '' }
+            </div>
+            {focus ? 
+                <div className="d-flex justify-content-end mt-2 fw-bold">
+                    <Text 
+                        className="me-2 cursor-pointer"
+                    >
+                        Hủy
+                    </Text>
+                    <Text className="cursor-pointer">Đồng ý</Text>
+                </div> : <></>
+            }
+        </>
+    );
+}
+
+
 function WriteComment(props) {
 
     return (
@@ -154,9 +195,7 @@ function WriteComment(props) {
                 src="https://cdn0.iconfinder.com/data/icons/profession-and-occupation-icons/110/avatar_occupation_profile_cook_kitchener_flunkey_food-512.png" 
             />
             <div className="CommentContent ms-3 w-75">
-                <EditText style={{
-                    opacity: 0.6
-                }} />
+                <CommentInput />
             </div>
         </div>
     );
