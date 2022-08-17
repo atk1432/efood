@@ -149,26 +149,23 @@ function CommentInput(props) {
     const [ focus, setFocus ] = useState(false);
 
     const doNotFocus = () => {
-        setFocus(false);
         window.removeEventListener('click', doNotFocus);
+        setFocus(false);
     }
 
     return (
         <>
             <div 
                 className={styles.CommentInput}
-                style={focus ? {
-                    marginTop: 5
-                } : {} }
                 onClick={(e) => {
                     e.stopPropagation();
                     if (!focus) {
-                        window.addEventListener('click', doNotFocus);
                         setFocus(true);
+                        window.addEventListener('click', doNotFocus)
                     }
                 }}
             >
-                { !focus ? 'Viết bình luận' : '' }
+                <EditText placeholder='Viết bình luận' focus={focus} /> 
             </div>
             {focus ? 
                 <div className="d-flex justify-content-end mt-2 fw-bold">

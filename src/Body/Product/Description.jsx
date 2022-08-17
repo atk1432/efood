@@ -19,7 +19,9 @@ function Description(props) {
                 } : {}
             }>
                 <Text size={17}>
-                    { props.children }
+                    <div>
+                        { props.children }
+                    </div>
                 </Text>
                 <div 
                     className="w-100 h-100 position-absolute top-0 start-0"
