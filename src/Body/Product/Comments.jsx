@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Header, Body } from '../../Share/Container';
 import Image from '../../Share/Image';
 import Text from '../../Share/Text';
 import StarsReview from './StarsReview';
-import EditText from '../../Utilities/EditText';
 import styles from '../../Asset/Css/Comment.module.css';
 
 
@@ -147,16 +146,23 @@ function Comment(props) {
 function CommentInput(props) {
 
     const [ focus, setFocus ] = useState(false);
+    const [ value, setValue ] = useState();
+    const [ hasValue, setHasValue ] = useState(false);
 
     const doNotFocus = () => {
         window.removeEventListener('click', doNotFocus);
         setFocus(false);
     }
 
+    const inputElement = useRef();
+
     return (
         <>
             <div 
                 className={styles.CommentInput}
+                style={focus ? {
+                    opacity: 1
+                } : {}}
                 onClick={(e) => {
                     e.stopPropagation();
                     if (!focus) {
@@ -165,7 +171,34 @@ function CommentInput(props) {
                     }
                 }}
             >
-                <EditText placeholder='Viết bình luận' focus={focus} /> 
+                <div 
+                    ref={inputElement}
+                    style={{
+                        outline: 0,
+                        zIndex: 2
+                    }}
+                    contentEditable="true"
+                    onInput={() => {
+                        // console.log(inputElement)
+                        if (inputElement.current.innerText) {
+                            setHasValue(true)
+                        } else {
+                            setHasValue(false);
+                        }
+                    }}
+                >
+                </div>
+                {!hasValue ? 
+                    <span 
+                        className='position-absolute top-0'
+                        style={{
+                            zIndex: 1
+                        }}
+                    >
+                        Viết bình luận
+                    </span> :
+                    <></>
+                }
             </div>
             {focus ? 
                 <div className="d-flex justify-content-end mt-2 fw-bold">
@@ -174,7 +207,12 @@ function CommentInput(props) {
                     >
                         Hủy
                     </Text>
-                    <Text className="cursor-pointer">Đồng ý</Text>
+                    <Text 
+                        className="cursor-pointer"
+                        onClick={() => setValue(inputElement.current.innerText)}
+                    >
+                        Đồng ý
+                     </Text>
                 </div> : <></>
             }
         </>
