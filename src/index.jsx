@@ -14,6 +14,7 @@ import {
     Outlet 
 } from 'react-router-dom';
 import ProductContainer from './Body/Product/ProductContainer';
+import Cart from './Body/Cart/Cart';
 
 
 function App() {
@@ -45,6 +46,7 @@ root.render(
                 </Route>
                 <Route path="/" element={ <Body container /> }>
                     <Route path='/product/:id' element={ <ProductContainer /> } />
+                    <Route path="/cart" element={ <Cart /> } />
                 </Route>
             </Route>
         </Routes>

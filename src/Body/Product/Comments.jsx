@@ -59,11 +59,11 @@ function CommentHeader(props) {
     return (
         <div className="Comment my-4 d-flex">
             <Image
-                width={45}
-                height={45}
+                width={props.imageSize ?? 45}
+                height={props.imageSize ?? 45}
                 src="https://cdn0.iconfinder.com/data/icons/profession-and-occupation-icons/110/avatar_occupation_profile_cook_kitchener_flunkey_food-512.png" 
             />
-            <div className="CommentContent ms-3">
+            <div className="CommentContent w-100 ms-3">
                 <div className="CommentContent__User">
                     <Text weight={900} className="me-2">
                         { props.name }
@@ -105,6 +105,7 @@ function CommentResponse(props) {
                         name={ comment.name }
                         comment={ comment.comment }
                         response={ comment.response }
+                        responseMode
                     />
                 ) : <></>
             }
@@ -115,23 +116,36 @@ function CommentResponse(props) {
 
 function Comment(props) {
 
+    const [ response, setResponse ] = useState(false);
+
     return (
-        <CommentHeader name={props.name}>
-            <div className="CommentContent__Review">
-                <Text size={14} opacity={0.6}>
-                    <StarsReview rate={4.5} />
-                    <span className="ms-2">4.5</span>
-                </Text>
-            </div>
+        <CommentHeader 
+            name={props.name} 
+            imageSize={props.responseMode ? props.imageSize : null}
+        >
+            {!props.responseMode ? 
+                <div className="CommentContent__Review">
+                    <Text size={14} opacity={0.6}>
+                        <StarsReview rate={4.5} />
+                        <span className="ms-2">4.5</span>
+                    </Text> 
+                </div> : <></>
+            }
             <div className="CommentContent__Info">
                 <div>{ props.comment }</div>
             </div>
             <div className="CommentContent__Interaction mt-3 d-flex flex-wrap"> 
                 <ButtonInteractions />
-                <span className="cursor-pointer">
+                <span 
+                    className="cursor-pointer"
+                    onClick={() => setResponse(!response)}
+                >
                     Phản hồi
                 </span>
             </div>
+            {response ?
+                <WriteComment responseMode /> : <></>
+            }
             {props.response.length !== 0 ?  
                 <CommentResponse 
                     amount={props.response.length} 
@@ -143,38 +157,60 @@ function Comment(props) {
 }
 
 
+function CommentStars() {
+
+    const [ stars, setStars ] = useState('');
+
+    return (
+        <div style={{
+            fontSize: 18,
+            marginBottom: 10
+        }}>
+            {                            
+                Array(5).fill(0).map((item, index) => {
+                    return (
+                        <i 
+                            key={index} 
+                            className={`
+                                ${stars >= index + 1 ? 'fa-solid' : 'far'}
+                                fa-star
+                                text-warning cursor-pointer me-2
+                            `}
+                            onClick={() => setStars(index + 1)}
+                        ></i>
+                    )
+                })
+            }
+            <span className="ms-2">{ stars }</span>
+        </div>
+    );
+}
+
+
 function CommentInput(props) {
 
     const [ focus, setFocus ] = useState(false);
     const [ value, setValue ] = useState();
     const [ hasValue, setHasValue ] = useState(false);
 
-    const doNotFocus = () => {
-        window.removeEventListener('click', doNotFocus);
-        setFocus(false);
-    }
-
     const inputElement = useRef();
 
     return (
         <>
+            {props.responseMode ? 
+               <CommentStars /> : <></>
+            }
             <div 
                 className={styles.CommentInput}
                 style={focus ? {
-                    opacity: 1
+                    opacity: 1,
                 } : {}}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    if (!focus) {
-                        setFocus(true);
-                        window.addEventListener('click', doNotFocus)
-                    }
-                }}
             >
                 <div 
                     ref={inputElement}
                     style={{
                         outline: 0,
+                        position: 'relative',
                         zIndex: 2
                     }}
                     contentEditable="true"
@@ -186,6 +222,8 @@ function CommentInput(props) {
                             setHasValue(false);
                         }
                     }}
+                    onFocus={() => setFocus(true)}
+                    onBlur={() => setFocus(false)}
                 >
                 </div>
                 {!hasValue ? 
@@ -247,7 +285,13 @@ function Comments() {
                 {
                     name: 'Response',
                     comment: 'This is a comment!',
-                    response: []
+                    response: [
+                        {
+                            name: 'User',
+                            comment: 'This is a comment!',
+                            response: []
+                        }
+                    ]
                 },
                 {
                     name: 'Cứt',

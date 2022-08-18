@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import MetaInfo from '../Share/MetaInfo';
 import shares from '../Asset/Css/Share.module.css';
 
@@ -12,8 +13,8 @@ function Item(props) {
     }
 
     return (
-        <a 
-            href=""
+        <Link 
+            to="/cart"
             onMouseEnter={ hover }
             onMouseLeave={ hover }
             className={ 
@@ -32,7 +33,7 @@ function Item(props) {
                     { props.metaInfo }
                 </MetaInfo>
             }
-        </a>
+        </Link>
     );
 }
 
