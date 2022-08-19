@@ -1,9 +1,11 @@
 import { useState, useContext, createContext } from 'react';
+import { Provider } from 'react-redux';
+import store from '../../Redux/store';
 import Text from '../../Share/Text';
 import PrepareOrder from './PrepareOrder';
 
 
-const SectionContext = createContext();
+export const SectionContext = createContext();
 
 
 function CartSection(props) {
@@ -33,7 +35,7 @@ function CartSection(props) {
 }
 
 
-function Cart() {
+export default function Cart() {
 
     const sections = [
         { 
@@ -49,51 +51,53 @@ function Cart() {
     const [ current, setCurrent ] = useState(0);
 
     return (
-        <SectionContext.Provider value={{ current, setCurrent }}>
-            <div className="col col-12">
-                <Text weight={900} size={32}>Giỏ hàng</Text>
-            </div>
-            <div className="col col-12 mt-5">
-                <div className="row">
-                    <CartSection 
-                        key={0} index={0}
-                        icon='fa-cart-shopping' color="text-info"
-                    >
-                        <div 
-                            className="position-absolute rounded-pill transition    "
-                            style={{
-                                width: '70%',
-                                left: `calc(${current * 100}% + 16%)`,
-                                height: 6,
-                                bottom: 0,
-                                background: 'var(--bs-danger)',
-                                zIndex: 2
-                            }}
-                        ></div>
-                    </CartSection>
-                    {sections.map((section, index) => 
-                        <CartSection 
-                            key={index + 1} 
-                            index={index + 1}
-                            icon={section.icon}
-                            color={section.color} 
-                            setCurrent={setCurrent}
-                        />
-                    )}
+        <Provider store={store}>
+            <SectionContext.Provider value={{ current, setCurrent }}>
+                <div className="col col-12">
+                    <Text weight={900} size={32}>Giỏ hàng</Text>
                 </div>
-            </div>
-            <div className="col col-12 mt-5">
-                {
-                    (function () {
-                        if (current == 0)
-                            return (
-                                <PrepareOrder />
-                            );
-                    })() 
-                }
-            </div>
-        </SectionContext.Provider>
+                <div className="col col-12 mt-5">
+                    <div className="row">
+                        <CartSection 
+                            key={0} index={0}
+                            icon='fa-cart-shopping' color="text-info"
+                        >
+                            <div 
+                                className="position-absolute rounded-pill transition    "
+                                style={{
+                                    width: '70%',
+                                    left: `calc(${current * 100}% + 16%)`,
+                                    height: 6,
+                                    bottom: 0,
+                                    background: 'var(--bs-danger)',
+                                    zIndex: 2
+                                }}
+                            ></div>
+                        </CartSection>
+                        {sections.map((section, index) => 
+                            <CartSection 
+                                key={index + 1} 
+                                index={index + 1}
+                                icon={section.icon}
+                                color={section.color} 
+                                setCurrent={setCurrent}
+                            />
+                        )}
+                    </div>
+                </div>
+                <div className="col col-12 mt-5">
+                    {
+                        (function () {
+                            if (current == 0)
+                                return (
+                                    <PrepareOrder />
+                                );
+                        })() 
+                    }
+                </div>
+            </SectionContext.Provider>
+        </Provider>
     );
 }
 
-export default Cart;
+// export default Cart;

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { change, init } from '../../Redux/counterPrice';
 import { Link } from 'react-router-dom';
 import Image from '../../Share/Image';
 import Price from '../Section/Price';
@@ -8,7 +10,10 @@ import ToVND from '../../Utilities/ConvertToVND';
 
 function CaculatePrice(props) {
 
-    const [ number, setNumber ] = useState(props.number)
+    const [ number, setNumber ] = useState(props.number);
+
+    // const count = useSelector(state => state.counterPrice.value);
+    const dispatch = useDispatch();
 
     return (
         <div className="d-flex align-items-center mt-2 flex-wrap">
@@ -22,7 +27,16 @@ function CaculatePrice(props) {
                 type="number" 
                 style={{ width: 50 }} 
                 value={ number } 
-                onChange={(e) => setNumber(e.target.value)}
+                onChange={(e) => {
+                    if (e.target.value < 0)
+                        return;
+
+                    dispatch(change({
+                        price: e.target.value * parseInt(props.price),
+                        index: props.index
+                    }));
+                    setNumber(e.target.value)
+                }}
             />
             <Text size={15} className="mx-2">
                 =
@@ -34,6 +48,8 @@ function CaculatePrice(props) {
 
 
 function CartItem(props) {
+
+    const dispatch = useDispatch();
 
     return (
         <div className="row gx-2 bg-light p-2">
@@ -59,10 +75,21 @@ function CartItem(props) {
                 <CaculatePrice 
                     price={props.price} 
                     number={props.number} 
+                    index={props.index}
                 />
             </div>
             <div className="col col-1 d-flex align-items-center">
-                <i className="fa-solid fa-xmark cursor-pointer fs-5"></i>
+                <i 
+                    className="fa-solid fa-xmark cursor-pointer fs-5"
+                    onClick={() => {
+                        var dataset = [...props.dataset];
+                        dataset.splice(props.index, 1);
+
+                        dispatch(init( dataset.map(data => data.number * data.price) ));
+                        props.setDataset(dataset);
+
+                    }}
+                ></i>
             </div>
         </div>
     ); 

@@ -1,4 +1,10 @@
+import { useState, useEffect, useContext } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { init } from '../../Redux/counterPrice';
 import CartItem from './CartItem';
+import ToVND from '../../Utilities/ConvertToVND';
+import Price from '../Section/Price';
+import { SectionContext } from './Cart';
 
 
 function Input(props) {
@@ -45,6 +51,23 @@ function Input(props) {
 }
 
 
+function Total() {
+
+    const count = useSelector(state => state.counterPrice.value);
+
+    return (
+        <div className="col col-12 mt-2 d-flex align-items-center">
+            <span className="fw-bold me-2">
+                Tổng cộng: 
+            </span>
+            <Price>
+                { ToVND(count.reduce((total, data) => total + data, 0)) }
+            </Price>
+        </div>
+    );
+}
+
+
 function PrepareOrder() {
 
     const inputs = [
@@ -70,7 +93,38 @@ function PrepareOrder() {
             width: '90%',
             noWeight: true
         }
-    ]
+    ];
+
+    const dispatch = useDispatch();
+
+    const [ dataset, setDataset ] = useState([
+        {
+            image: 'https://d1sag4ddilekf6.azureedge.net/compressed/merchants/5-CZBYRP6KRXJCEN/hero/f6f3e83b389a4355a7e9072a55cd0fbc_1659913137408522559.jpg',
+            name: "Bún gà ngon 74",
+            price: 25000,
+            number: 3        
+        },
+        {
+            image: 'https://d1sag4ddilekf6.azureedge.net/compressed/merchants/5-CZBYRP6KRXJCEN/hero/f6f3e83b389a4355a7e9072a55cd0fbc_1659913137408522559.jpg',
+            name: "Bún gà ngon 74",
+            price: 25000,
+            number: 3        
+        }
+    ]);
+
+    const { setCurrent } = useContext(SectionContext);
+
+    useEffect(() => {
+
+        var total = dataset.map(data => 
+            data.price * data.number
+        );        
+
+        dispatch(init(total));
+
+    }, [])
+
+    // console.log(dataset)
 
     return (
         <div className="row">
@@ -90,24 +144,27 @@ function PrepareOrder() {
             </div>
             <div className="col col-md-8 col-12 mt-3">
                 <div className="row gy-3">
-                    <div className="col col-12">
-                        <CartItem 
-                            image='https://d1sag4ddilekf6.azureedge.net/compressed/merchants/5-CZBYRP6KRXJCEN/hero/f6f3e83b389a4355a7e9072a55cd0fbc_1659913137408522559.jpg'
-                            name="Bún gà ngon 74"
-                            price={25000}
-                            number={2}
-                        />
-                    </div>
-                    <div className="col col-12">
-                        <CartItem 
-                            image='https://d1sag4ddilekf6.azureedge.net/compressed/merchants/5-CZBYRP6KRXJCEN/hero/f6f3e83b389a4355a7e9072a55cd0fbc_1659913137408522559.jpg'
-                            name="Bún gà ngon 74"
-                            price={25000}
-                            number={2}
-                        />
-                    </div>
+                    {dataset.map((data, index) => 
+                        <div className="col col-12" key={index}>
+                            <CartItem 
+                                index={ index }
+                                image={ data.image }
+                                name={ data.name }
+                                price={ data.price }
+                                number={ data.number }
+                                setDataset={setDataset}
+                                dataset={ dataset }
+                            />
+                        </div>
+                    )}
+                    <Total />
                     <div className="col col-12 my-4 d-flex justify-content-center">
-                        <button className="btn btn-primary btn-lg fw-bold">Đặt hàng</button>
+                        <button 
+                            className="btn btn-primary btn-lg fw-bold"
+                            onClick={() => setCurrent(1)}
+                        >
+                            Đặt hàng
+                        </button>  
                     </div>
                 </div>
             </div>
