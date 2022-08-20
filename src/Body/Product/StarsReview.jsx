@@ -1,7 +1,13 @@
 function StarsReview(props) {
 
     const render = () => {
-        var rate = props.rate.toString();
+        console.log(props.rate)
+        if (props.rate != 0) {
+            var rate = props.rate.toString();
+        } else {
+            var rate = '0.0';
+        }
+
         var output = [];
 
         if (rate.length === 3) {
@@ -24,6 +30,7 @@ function StarsReview(props) {
             if (5 - (parseInt(rate[0]) + 1) > 0) {
                 for (var i = 0; i < 5 - (parseInt(rate[0]) + 1); i++) {
                     output.push(<i key={key} className="fa-regular fa-star text-warning"></i>);
+                    key++;
                 }
             }
         }

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Image from '../../Share/Image';
 import Text from '../../Share/Text';
+import StarsReview from '../Product/StarsReview';
 import Price from './Price';
 import styles from '../../Asset/Css/Body.module.css';
 
@@ -30,28 +31,8 @@ function Product(props) {
                 </Text>
                 <div style={{ margin: '12px 0' }}>
                     <Text className={styles.ProductInfo__Rate}>
-                        <i className="fa-solid fa-star text-warning"></i>
+                        <StarsReview rate={ props.rate } />
                         { props.rate }
-                    </Text>
-                    <Text 
-                        className={styles.ProductInfo__Rate}
-                        opacity={0.8}
-                    >
-                        <i className="fa-regular fa-clock"></i>
-                        { props.time } phút
-                    </Text>
-                    <Text 
-                        className={styles.ProductInfo__Rate}
-                        opacity={0.8}
-                    >
-                        <i 
-                            className="fa-solid fa-circle"
-                            style={{
-                                fontSize: 7,
-                                transform: 'translateY(-3px)'
-                            }}
-                        ></i>
-                        { props.distance } km
                     </Text>
                 </div>
                 <Price>

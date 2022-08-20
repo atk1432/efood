@@ -27,34 +27,15 @@ function Product(props) {
                         { data.name }
                     </Text>
                     <Text display="block" opacity={0.7} mt={6} size={18}>
-                        { data.types.join(' - ') }
+                        {/*{ data.types.join(' - ') }*/}
+                        sdfsd
                     </Text>
                     <div style={{ margin: '12px 0' }}>
                         <Text className={styles.ProductInfo__Rate}>
                             <StarsReview rate={ data.rate } />
                             { data.rate }
                         </Text>
-                        <br />
-                        <Text 
-                            className={styles.ProductInfo__Rate}
-                            opacity={0.8}
-                        >
-                            <i className="fa-regular fa-clock"></i>
-                            { data.time } phút
-                        </Text>
-                        <Text 
-                            className={styles.ProductInfo__Rate}
-                            opacity={0.8}
-                        >
-                            <i 
-                                className="fa-solid fa-circle"
-                                style={{
-                                    fontSize: 7,
-                                    transform: 'translateY(-3px)'
-                                }}
-                            ></i>
-                            { data.distance } km
-                        </Text>
+                        <br />                       
                     </div>
                     <Price size={34}>
                         {new Intl.NumberFormat(
