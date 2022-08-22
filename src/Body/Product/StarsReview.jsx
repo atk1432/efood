@@ -1,7 +1,6 @@
 function StarsReview(props) {
 
     const render = () => {
-        console.log(props.rate)
         if (props.rate != 0) {
             var rate = props.rate.toString();
         } else {

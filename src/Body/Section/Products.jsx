@@ -15,6 +15,7 @@ function Products() {
         
         axios.get(apiOrigin + '/api/products')
             .then(function (response) {
+                // console.log(response.data);
                 setLoaded(true);
                 setDataset(response.data);
             })
@@ -30,13 +31,11 @@ function Products() {
                         className="col col-xxl-3 col-xl-3 col-lg-4 col-6"
                     >
                         <Product
-                            id={ index }
+                            id={ data.id }
                             name={ data.name }
-                            types={ ['sdfsdfsd'] }
+                            types={ data.types }
                             image={ data.image }
                             rate={ data.rate }
-                            // time={ data.time }
-                            // distance={ data.distance }
                             price={ data.price }
                         /> 
                     </div>

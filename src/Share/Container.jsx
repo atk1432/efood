@@ -14,7 +14,8 @@ function Header(props) {
 function Body(props) {
 
     return (
-        <div 
+        <div
+            ref={props._ref}
             className={"col col-12 mt-2 " + (props.className ?? '') }
             style={props.style}
         >

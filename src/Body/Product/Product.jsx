@@ -27,8 +27,7 @@ function Product(props) {
                         { data.name }
                     </Text>
                     <Text display="block" opacity={0.7} mt={6} size={18}>
-                        {/*{ data.types.join(' - ') }*/}
-                        sdfsd
+                        { data.types.join(' - ') }
                     </Text>
                     <div style={{ margin: '12px 0' }}>
                         <Text className={styles.ProductInfo__Rate}>
