@@ -14,7 +14,7 @@ function Item(props) {
 
     return (
         <Link 
-            to="/cart"
+            to={ props.to ?? '' }
             onMouseEnter={ hover }
             onMouseLeave={ hover }
             className={ 

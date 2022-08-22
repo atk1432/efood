@@ -11,10 +11,12 @@ function Controller() {
         var items = [
             {
                 name: 'Home',
+                to: '/',
                 element: <i className="fa-solid fa-house"></i>
             }, 
             {
                 name: 'Cart',
+                to: '/cart',
                 element: <i className="fa-solid fa-cart-shopping"></i>,
                 badge: 2
             },
@@ -34,13 +36,17 @@ function Controller() {
 
         return items.map((item, index) => {
             return (
-                <li key={index}>
+                <li 
+                    key={index}
+                    onClick={() => setActive(index)}
+                >
                     <Item 
                         className={ 
                             styles.ControllerItem + ' ' + 
                             (index === active ? styles['ControllerItem--Active'] : '')
                         }
                         metaInfo={ item.name }
+                        to={ item.to }
                     >
                         { item.element }
                         { item.badge ? 
