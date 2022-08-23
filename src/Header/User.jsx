@@ -8,22 +8,80 @@ import Cookies from 'js-cookie';
 import axios from '../axiosApi';
 
 
-function Info(props) {
+function InfoItem(props) {
+
+    const [ hover, setHover ] = useState(false);
 
     return (
-        <>
-            <div className="position-fixed top-0 end-0 bg-light d-flex flex-column align-items-center">
-                <Image className="mt-3" width={100} src={props.user.image} />
-                <div className="p-3 cursor-pointer">
-                    <span style={{
-                        fontSize: 23,
-                        fontWeight: 900,
-                    }}>{ props.user.name }</span>
-                </div>
-            </div>
-            <div className="position-fixed w-100 h-100 start-0 top-0 bg-dark bg-opacity-50">
-            </div>
-        </>
+        <Link 
+            to={props.src ?? ''} 
+            className="p-3 d-flex w-100 justify-content-center position-relative fw-bold cursor-pointer"
+            onMouseEnter={(e) => {
+                e.stopPropagation();
+                setHover(true)
+            }}
+            onMouseLeave={(e) => {
+                e.stopPropagation();
+                setHover(false)
+            }}
+            style={{
+                backgroundColor: hover ? '#ccc' : '#fff'
+            }}
+        >
+            <span 
+                className="position-absolute"
+                style={{
+                    left: 16
+                }}
+            >{ props.icon }</span>
+            { props.name }
+        </Link>
+    );
+}
+
+
+function Info(props) {
+
+    const options = [
+        {
+            name: 'Đăng xuất',
+            icon: <i className="fa-solid fa-arrow-right-from-bracket"></i>
+        },
+        {
+            name: 'Trợ giúp',
+            icon: <i className="fa-solid fa-circle-question"></i>
+        }
+    ]
+
+    useEffect(() => {
+
+        const unfocus = () => {
+            props.setShowInfo(false);
+        }
+
+        window.addEventListener('click', unfocus);
+
+        return () => {
+            window.removeEventListener('click', unfocus); 
+        }
+    }, [])
+
+    return (
+        <div 
+            className="position-absolute shadow rounded end-0 bg-white d-flex flex-column align-items-center"
+            style={{
+                top: '105%',
+                minWidth: 200,
+            }}
+        >
+            {options.map((option, index) => 
+                <InfoItem 
+                    key={index} 
+                    name={option.name} 
+                    icon={option.icon}  
+                />
+            )}
+        </div>            
     );
 }
 
@@ -42,20 +100,24 @@ function User() {
         
     }, [])
 
-    
-
     return (
         <>
-            { avatar ? 
-                <div onClick={() => setShowInfo(!showInfo)}>
+            { user.email ? 
+                <div 
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setShowInfo(!showInfo)
+                    }}
+                    className="position-relative cursor-pointer"
+                >
                     <Image 
-                        width="60px"
-                        height="60px"
+                        width="50px"
+                        height="50px"
                         className="float-end rounded-circle"
                         src={user.image}
                     />
                     {showInfo ? 
-                        <Info user={user} /> : <></>
+                        <Info user={user} setShowInfo={setShowInfo} /> : <></>
                     }
                 </div> :
                 <Link to="/login" className="me-3">
