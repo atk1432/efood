@@ -90,15 +90,23 @@ function User() {
 
     const user = useSelector(state => state.user);
     const [ showInfo, setShowInfo ] = useState(false);
+    // const [ reRender, setReRender ] = useState
     const dispatch = useDispatch();
 
     useEffect(() => {
 
-        if (Cookies.get('_sid')) {
+        var token = Cookies.get('_sid')
+
+        if (token) {
             axios.get(window.apiOrigin + '/api/user')
                 .then(response => {
                     dispatch(login({ data: response.data }))
-                }).catch(error => {})
+                }).catch(error => {
+                    axios.get(window.apiOrigin = '/api/auth/redirect')
+                        .then(response => 
+                            Cookies.set('_sid', response.data.token, { expires: 1 })
+                        )
+                })
         }
         
     }, [])

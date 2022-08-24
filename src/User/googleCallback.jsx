@@ -14,7 +14,7 @@ function GoogleCallback() {
 
         axios.get(window.apiOrigin + '/api/auth/google/callback?code=' + code)
             .then((response) => {
-                Cookies.set('_sid', response.data.token, { expires: 1 / 24 });
+                Cookies.set('_sid', response.data.token, { expires: 1 });
                 setRedirect(true);
             })
 

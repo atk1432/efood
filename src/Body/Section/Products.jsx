@@ -13,19 +13,22 @@ function Products() {
     const limit = useRef(4)
     const [ loaded, setLoaded ] = useState(false);
 
-    useEffect(() => {
-        
-        const getData = () => {
-            axios.get(apiOrigin + '/api/products?offset=' + offset.current + '&limit=' + limit.current)
-            .then(function (response) {
-                // console.log(response.data);
-                setLoaded(true);
-                setDataset(dataset => [...dataset, ...response.data]);
-            })
-        }
+    const getData = (_limit) => {
+        axios.get(
+            apiOrigin + '/api/products?offset=' + 
+            offset.current + '&limit=' + (_limit || limit.current)
+        ).then(function (response) {
+            // console.log(response.data);
+            setLoaded(true);
+            setDataset(dataset => [...dataset, ...response.data]);
+        })
+
+        offset.current += limit.current;
+    }
+
+    useEffect(() => {    
 
         getData();
-        offset.current += limit.current;
 
         window.onscroll = () => {
             if (document.body.offsetHeight - window.scrollY <= window.innerHeight + 300)
@@ -33,7 +36,6 @@ function Products() {
                 if (!scrollEnter.current) {
                     scrollEnter.current = true;
                     getData();
-                    offset.current += limit.current;
                 }
             } else {
                 scrollEnter.current = false;
@@ -47,6 +49,14 @@ function Products() {
         }
 
     }, [])
+
+
+    useEffect(() => {
+        if (document.body.offsetHeight < window.innerHeight) {
+            getData(6)
+        }
+    })
+
 
     return (
         <>  
