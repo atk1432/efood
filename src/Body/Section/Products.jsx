@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Product from './Product';
 import ProductLoading from './ProductLoading';
 import { apiOrigin } from '../../config';
@@ -8,17 +8,43 @@ import axios from 'axios';
 function Products() {
 
     const [ dataset, setDataset ] = useState([]);
-
+    const scrollEnter = useRef(false);
+    const offset = useRef(1);
+    const limit = useRef(4)
     const [ loaded, setLoaded ] = useState(false);
 
     useEffect(() => {
         
-        axios.get(apiOrigin + '/api/products')
+        const getData = () => {
+            axios.get(apiOrigin + '/api/products?offset=' + offset.current + '&limit=' + limit.current)
             .then(function (response) {
                 // console.log(response.data);
                 setLoaded(true);
-                setDataset(response.data);
+                setDataset(dataset => [...dataset, ...response.data]);
             })
+        }
+
+        getData();
+        offset.current += limit.current;
+
+        window.onscroll = () => {
+            if (document.body.offsetHeight - window.scrollY <= window.innerHeight + 300)
+            {
+                if (!scrollEnter.current) {
+                    scrollEnter.current = true;
+                    getData();
+                    offset.current += limit.current;
+                }
+            } else {
+                scrollEnter.current = false;
+            }
+        }
+
+        // window.onscroll = scroll;
+        
+        return () => {
+            window.onscroll = null;
+        }
 
     }, [])
 

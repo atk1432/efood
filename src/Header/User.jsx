@@ -94,9 +94,12 @@ function User() {
 
     useEffect(() => {
 
-        axios.get(window.apiOrigin + '/api/user')
-            .then(response => dispatch(login({ data: response.data })))
-            .catch(error => {});
+        if (Cookies.get('_sid')) {
+            axios.get(window.apiOrigin + '/api/user')
+                .then(response => {
+                    dispatch(login({ data: response.data }))
+                }).catch(error => {})
+        }
         
     }, [])
 
