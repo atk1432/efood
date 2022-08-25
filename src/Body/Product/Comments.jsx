@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { Header, Body } from '../../Share/Container';
 import Image from '../../Share/Image';
 import Text from '../../Share/Text';
 import StarsReview from './StarsReview';
 import styles from '../../Asset/Css/Comment.module.css';
+import axios from '../../axiosApi';
 
 
 function ButtonInteraction(props) {
@@ -116,7 +118,9 @@ function CommentResponse(props) {
 
 function Comment(props) {
 
-    const [ response, setResponse ] = useState(false);
+    const [ responses, setResponses ] = useState([]); // For fetch API response
+    const [ response, setResponse ] = useState(false); // For write response
+
 
     return (
         <CommentHeader 
@@ -146,10 +150,10 @@ function Comment(props) {
             {response ?
                 <WriteComment responseMode /> : <></>
             }
-            {props.response.length !== 0 ?  
+            {responses.length !== 0 ?  
                 <CommentResponse 
-                    amount={props.response.length} 
-                    response={props.response}
+                    amount={props.responses} 
+                    response={responses}
                 /> : <></>
             }
         </CommentHeader>
@@ -260,60 +264,38 @@ function CommentInput(props) {
 
 function WriteComment(props) {
 
+    const avatar = useSelector(state => state.user.image);
+
     return (
         <div className="Comment my-4 d-flex">
             <Image
                 width={45}
                 height={45}
-                src="https://cdn0.iconfinder.com/data/icons/profession-and-occupation-icons/110/avatar_occupation_profile_cook_kitchener_flunkey_food-512.png" 
+                src={avatar} 
             />
             <div className="CommentContent ms-3 w-75">
-                <CommentInput />
+                <CommentInput responseMode={props.responseMode} />
             </div>
         </div>
     );
 }
 
 
-function Comments() {
+function Comments(props) {
 
-    const [ comments, setComments ] = useState([
-        {
-            name: 'User',
-            comment: 'This is a comment!',
-            response: [
-                {
-                    name: 'Response',
-                    comment: 'This is a comment!',
-                    response: [
-                        {
-                            name: 'User',
-                            comment: 'This is a comment!',
-                            response: []
-                        }
-                    ]
-                },
-                {
-                    name: 'Cứt',
-                    comment: 'This is a comment!',
-                    response: []
-                }
-            ]
-        },
-        {
-            name: 'Yasuo',
-            comment: 'This is a comment!',
-            response: []
-        }
-    ]);
+    const [ comments, setComments ] = useState([]);
 
     const [ loaded, setLoaded ] = useState(true);
 
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         setLoaded(true);
-    //     }, 3000)
-    // }, [])
+    useEffect(() => {
+        
+        axios.get(window.apiOrigin + `/api/products/${props.productId}/comments`)
+            .then(response => {
+                setComments(response.data)
+                setLoaded(true);
+            })
+
+    }, [])
 
     return (
         <>
@@ -322,15 +304,17 @@ function Comments() {
             </Header>
             {loaded ?
                 <Body>
-                    <WriteComment name='You' />
-                    {comments.map((comment, index) => 
-                        <Comment 
-                            key={ index }
-                            name={ comment.name }
-                            comment={ comment.comment }
-                            response={ comment.response }
-                        />
-                    )}
+                    <WriteComment name='You' responseMode={true} />
+                    {comments.length != 0 ?
+                        comments.map((comment, index) => 
+                            <Comment 
+                                key={ index }
+                                name={ comment.name }
+                                comment={ comment.comment }
+                                // response={ comment.response }
+                            />) :
+                        <i>Không có bình luận</i>
+                    }
                 </Body> :
                 <div className="text-center mt-4">
                     <div className="spinner-border" role="status">

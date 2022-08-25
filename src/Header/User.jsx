@@ -90,7 +90,7 @@ function User() {
 
     const user = useSelector(state => state.user);
     const [ showInfo, setShowInfo ] = useState(false);
-    // const [ reRender, setReRender ] = useState
+    const [ reRender, setReRender ] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -102,14 +102,15 @@ function User() {
                 .then(response => {
                     dispatch(login({ data: response.data }))
                 }).catch(error => {
-                    axios.get(window.apiOrigin = '/api/auth/redirect')
-                        .then(response => 
-                            Cookies.set('_sid', response.data.token, { expires: 1 })
-                        )
+                    axios.get(window.apiOrigin + '/api/auth/refresh?token=' + token)
+                        .then(response => {
+                            Cookies.set('_sid', response.data.token, { expires: 1 });
+                            setReRender(!reRender);
+                        });
                 })
         }
         
-    }, [])
+    }, [reRender])
 
     return (
         <>

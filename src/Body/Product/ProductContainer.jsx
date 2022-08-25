@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import storeUser from '../../Redux/storeUser';
 import Product from './Product';
 import ProductLoading from './/ProductLoading';
 import Description from './Description';
@@ -33,7 +35,9 @@ function ProductContainer() {
                 <Description _ref={buttonElement}>
                     { data.description }
                 </Description> 
-                <Comments />
+                <Provider store={storeUser}>
+                    <Comments productId={data.id} />
+                </Provider>
             </> :
             <ProductLoading />
     )
