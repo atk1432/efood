@@ -8,6 +8,7 @@ axios.interceptors.request.use(function (config) {
 
     if (sid) {
         config.headers.Authorization = 'Bearer ' + sid; 
+        config.baseURL = 'http://127.0.0.1:8000/api'
     }
 
     return config;

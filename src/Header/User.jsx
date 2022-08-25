@@ -98,11 +98,11 @@ function User() {
         var token = Cookies.get('_sid')
 
         if (token) {
-            axios.get(window.apiOrigin + '/api/user')
+            axios.get('/user')
                 .then(response => {
                     dispatch(login({ data: response.data }))
                 }).catch(error => {
-                    axios.get(window.apiOrigin + '/api/auth/refresh?token=' + token)
+                    axios.get('/auth/refresh?token=' + token)
                         .then(response => {
                             Cookies.set('_sid', response.data.token, { expires: 1 });
                             setReRender(!reRender);

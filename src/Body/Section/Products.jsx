@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import Product from './Product';
 import ProductLoading from './ProductLoading';
 import { apiOrigin } from '../../config';
-import axios from 'axios';
+import axios from '../../axiosApi';
 
 
 function Products() {
@@ -15,10 +15,9 @@ function Products() {
 
     const getData = (_limit) => {
         axios.get(
-            apiOrigin + '/api/products?offset=' + 
+             '/products?offset=' + 
             offset.current + '&limit=' + (_limit || limit.current)
         ).then(function (response) {
-            // console.log(response.data);
             setLoaded(true);
             setDataset(dataset => [...dataset, ...response.data]);
         })
