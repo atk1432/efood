@@ -14,7 +14,7 @@ function InfoItem(props) {
 
     return (
         <Link 
-            to={props.src ?? ''} 
+            to={props.to ?? ''} 
             className="p-3 d-flex w-100 justify-content-center position-relative fw-bold cursor-pointer"
             onMouseEnter={(e) => {
                 e.stopPropagation();
@@ -45,6 +45,7 @@ function Info(props) {
     const options = [
         {
             name: 'Đăng xuất',
+            to: window.apiOrigin + '/auth/logout',
             icon: <i className="fa-solid fa-arrow-right-from-bracket"></i>
         },
         {
@@ -79,6 +80,7 @@ function Info(props) {
                     key={index} 
                     name={option.name} 
                     icon={option.icon}  
+                    to={option.to}
                 />
             )}
         </div>            

@@ -7,7 +7,7 @@ import ProductLoading from './/ProductLoading';
 import Description from './Description';
 import Comments from './Comments';
 import { apiOrigin } from '../../config';
-import axios from 'axios';
+import axios from '../../axiosApi';
 
 
 function ProductContainer() {
@@ -19,7 +19,7 @@ function ProductContainer() {
 
     useEffect(() => {
         
-        axios.get(apiOrigin + '/api/products/' + params.id)
+        axios.get('/products/' + params.id)
             .then(function (response) {
                 setLoaded(true);
                 setData(response.data);

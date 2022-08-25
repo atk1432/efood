@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext, createContext } from 'react';
+import { useState, useEffect, useRef, useContext, createContext, memo } from 'react';
 import { useSelector } from 'react-redux';
 import { Header, Body } from '../../Share/Container';
 import Image from '../../Share/Image';
@@ -9,6 +9,7 @@ import axios from '../../axiosApi';
 
 
 const ProductIdContext = createContext();
+const CommentsContext = createContext();
 
 
 function ButtonInteraction(props) {
@@ -66,7 +67,7 @@ function CommentHeader(props) {
             <Image
                 width={props.imageSize ?? 45}
                 height={props.imageSize ?? 45}
-                src="https://cdn0.iconfinder.com/data/icons/profession-and-occupation-icons/110/avatar_occupation_profile_cook_kitchener_flunkey_food-512.png" 
+                src={props.avatar} 
             />
             <div className="CommentContent w-100 ms-3">
                 <div className="CommentContent__User">
@@ -87,8 +88,6 @@ function CommentHeader(props) {
 function CommentResponse(props) {
 
     const [ show, setShow ] = useState(false);
-
-    // console.log(props.response);
 
     return (
         <div className="CommentContent__Response my-3 cursor-pointer">
@@ -127,14 +126,15 @@ function Comment(props) {
 
     return (
         <CommentHeader 
-            name={props.name} 
+            name={ props.name } 
+            avatar={ props.avatar }
             imageSize={props.responseMode ? props.imageSize : null}
         >
             {!props.responseMode ? 
                 <div className="CommentContent__Review">
                     <Text size={14} opacity={0.6}>
-                        <StarsReview rate={4.5} />
-                        <span className="ms-2">4.5</span>
+                        <StarsReview rate={ props.rate } />
+                        <span className="ms-2 fw-bold">{ props.rate }</span>
                     </Text> 
                 </div> : <></>
             }
@@ -172,7 +172,7 @@ function CommentStars(props) {
         <div style={{
             fontSize: 18,
             marginBottom: 10,
-            textAlign: 'center'
+            textAlign: props.responseMode ? '' : 'center'
         }}>
             <span className="fw-bold mb-3 d-inline-block">Bạn đánh giá như thế nào?</span>
             <div>
@@ -188,7 +188,7 @@ function CommentStars(props) {
                                 `}
                                 onClick={() => {
                                     setStars(index + 1);
-                                    props.setHidden(true);
+                                    props.setHidden(false);
                                     props.rate.current = index + 1;
                                 }}
                             ></i>
@@ -207,18 +207,26 @@ function CommentInput(props) {
     const [ focus, setFocus ] = useState(false);
     const [ value, setValue ] = useState();
     const [ hasValue, setHasValue ] = useState(false);
-    const [ hidden, setHidden ] = useState(false);
+    const [ hidden, setHidden ] = useState(props.hidden ?? true);
+
     const productId = useContext(ProductIdContext);
+    const setComments = useContext(CommentsContext);
+
     const inputElement = useRef();
     const rate = useRef(0);
 
 
+
     return (
         <>
-            {props.responseMode ? 
-                <CommentStars setHidden={setHidden} rate={rate} />  : <></>
+            {!props.responseMode ? 
+                <CommentStars 
+                    responseMode={props.responseMode} 
+                    setHidden={setHidden} 
+                    rate={rate} 
+                />  : <></>
             }
-            {hidden ? 
+            {!hidden || props.responseMode ? 
             <>
                 <div 
                     className={styles.CommentInput}
@@ -235,7 +243,6 @@ function CommentInput(props) {
                         }}
                         contentEditable="true"
                         onInput={() => {
-                            // console.log(inputElement)
                             if (inputElement.current.innerText) {
                                 setHasValue(true)
                             } else {
@@ -266,6 +273,10 @@ function CommentInput(props) {
                     <div className="d-flex justify-content-end mt-2 fw-bold">
                         <Text 
                             className="me-2 cursor-pointer"
+                            onClick={() => {
+                                setHasValue(false);
+                                inputElement.current.innerHTML = '';
+                            }}
                         >
                             Hủy
                         </Text>
@@ -275,7 +286,6 @@ function CommentInput(props) {
                                 if (inputElement.current.innerText.length &&
                                     rate.current != 0
                                 ) {
-                                    // setValue(inputElement.current.innerText);
                                     axios.post(
                                         `/products/${productId}/comments`, 
                                         {
@@ -283,7 +293,14 @@ function CommentInput(props) {
                                             'rate': rate.current
                                         }
                                     ).then(response => 
-                                        console.log(response.data)
+                                        setComments(comments => [ 
+                                            {
+                                                name: 'You',
+                                                comment: inputElement.current.innerText,
+                                                rate: rate.current
+                                            },
+                                            ...comments, 
+                                        ])
                                     );
                                 }
                             }}
@@ -311,6 +328,7 @@ function WriteComment(props) {
     );
 }
 
+WriteComment = memo(WriteComment);
 
 function Comments(props) {
 
@@ -320,7 +338,7 @@ function Comments(props) {
 
     useEffect(() => {
         
-        axios.get(window.apiOrigin + `/api/products/${props.productId}/comments`)
+        axios.get(`/products/${props.productId}/comments`)
             .then(response => {
                 setComments(response.data)
                 setLoaded(true);
@@ -330,28 +348,33 @@ function Comments(props) {
 
     return (
         <ProductIdContext.Provider value={props.productId}>
-            <Header>
-                <Text weight={900} size={22}>Bình luận</Text>
-            </Header>
-            {loaded ?
-                <Body>
-                    <WriteComment name='You' responseMode={true} />
-                    {comments.length != 0 ?
-                        comments.map((comment, index) => 
-                            <Comment 
-                                key={ index }
-                                name={ comment.name }
-                                comment={ comment.comment }
-                                // response={ comment.response }
-                            />) :
-                        <i>Không có bình luận</i>
-                    }
-                </Body> :
-                <div className="text-center mt-4">
-                    <div className="spinner-border" role="status">
+            <CommentsContext.Provider value={setComments}>
+                <Header>
+                    <Text weight={900} size={22}>
+                        { comments.length } Bình luận
+                    </Text>
+                </Header>
+                {loaded ?
+                    <Body>
+                        <WriteComment name='You' responseMode={false} />
+                        {comments.length != 0 ?
+                            comments.map((comment, index) => 
+                                <Comment 
+                                    key={ index }
+                                    name={ comment.user.name }
+                                    avatar={ comment.user.image }
+                                    comment={ comment.comment }
+                                    rate={ comment.rate }
+                                />) :
+                            <i>Không có bình luận</i>
+                        }
+                    </Body> :
+                    <div className="text-center mt-4">
+                        <div className="spinner-border" role="status">
+                        </div>
                     </div>
-                </div>
-            }
+                }
+            </CommentsContext.Provider>
         </ProductIdContext.Provider>
     );
 }
