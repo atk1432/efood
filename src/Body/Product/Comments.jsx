@@ -33,7 +33,7 @@ function ButtonInteraction(props) {
     )
 }
 
-function ButtonInteractions()  {
+function ButtonInteractions(props)  {
 
     const [ like, setLike ] = useState();
 
@@ -44,7 +44,7 @@ function ButtonInteractions()  {
                 value={like}
                 check='like'
             >
-                12
+                { like == 'like' ? parseInt(props.like) + 1 : props.like }
                 <i className="fa-solid fa-thumbs-up ms-2"></i>
             </ButtonInteraction>
             <ButtonInteraction 
@@ -52,7 +52,7 @@ function ButtonInteractions()  {
                 value={like}
                 check='dislike'
             >
-                12
+                { like == 'dislike' ? parseInt(props.dislike) + 1 : props.dislike }
                 <i className="fa-solid fa-thumbs-down ms-2"></i>
             </ButtonInteraction>
         </>
@@ -67,6 +67,7 @@ function CommentHeader(props) {
             <Image
                 width={props.imageSize ?? 45}
                 height={props.imageSize ?? 45}
+                className="rounded-circle"
                 src={props.avatar} 
             />
             <div className="CommentContent w-100 ms-3">
@@ -142,7 +143,7 @@ function Comment(props) {
                 <div>{ props.comment }</div>
             </div>
             <div className="CommentContent__Interaction mt-3 d-flex flex-wrap"> 
-                <ButtonInteractions />
+                <ButtonInteractions like={props.like} dislike={props.dislike} />
                 <span 
                     className="cursor-pointer"
                     onClick={() => setResponse(!response)}
@@ -208,6 +209,7 @@ function CommentInput(props) {
     const [ value, setValue ] = useState();
     const [ hasValue, setHasValue ] = useState(false);
     const [ hidden, setHidden ] = useState(props.hidden ?? true);
+    const user = useSelector(state => state.user);
 
     const productId = useContext(ProductIdContext);
     const setComments = useContext(CommentsContext);
@@ -295,11 +297,14 @@ function CommentInput(props) {
                                     ).then(response => 
                                         setComments(comments => [ 
                                             {
-                                                name: 'You',
+                                                user: {
+                                                    name: 'You',
+                                                    image: user.image
+                                                },
                                                 comment: inputElement.current.innerText,
                                                 rate: rate.current
                                             },
-                                            ...comments, 
+                                            ...comments
                                         ])
                                     );
                                 }
@@ -333,16 +338,50 @@ WriteComment = memo(WriteComment);
 function Comments(props) {
 
     const [ comments, setComments ] = useState([]);
-
-    const [ loaded, setLoaded ] = useState(true);
+    const [ loaded, setLoaded ] = useState(false);
+    const [ countComments, setCountComments ] = useState(0);
+    const user = useSelector(state => state.user);
+    const scrollEnter = useRef(false);
+    const offset = useRef(1);
+    const limit = useRef(4);
 
     useEffect(() => {
         
         axios.get(`/products/${props.productId}/comments`)
             .then(response => {
-                setComments(response.data)
+                setComments(comments => [...response.data, ...comments]);
                 setLoaded(true);
-            })
+            });
+
+    }, [])
+
+    useEffect(() => {   
+
+        window.onscroll = () => {
+            if (document.body.offsetHeight - window.scrollY <= window.innerHeight + 200)
+            {
+                if (!scrollEnter.current) {
+                    scrollEnter.current = true;
+                    axios.get(
+                        `/products/${props.productId}/other-comments?` +
+                        `offset=${offset.current}&limit=${limit.current}`
+                    )
+                        .then(response => {
+                            setComments(comments => [...comments, ...response.data]);
+                        });
+
+                    offset.current += limit.current;
+                }
+            } else {
+                scrollEnter.current = false;
+            }
+        }
+
+        // window.onscroll = scroll;
+        
+        return () => {
+            window.onscroll = null;
+        }
 
     }, [])
 
@@ -351,13 +390,13 @@ function Comments(props) {
             <CommentsContext.Provider value={setComments}>
                 <Header>
                     <Text weight={900} size={22}>
-                        { comments.length } Bình luận
+                        { props.comments } Bình luận
                     </Text>
                 </Header>
                 {loaded ?
                     <Body>
                         <WriteComment name='You' responseMode={false} />
-                        {comments.length != 0 ?
+                        {
                             comments.map((comment, index) => 
                                 <Comment 
                                     key={ index }
@@ -365,8 +404,9 @@ function Comments(props) {
                                     avatar={ comment.user.image }
                                     comment={ comment.comment }
                                     rate={ comment.rate }
-                                />) :
-                            <i>Không có bình luận</i>
+                                    like={ comment.like }
+                                    dislike={ comment.dislike }
+                                />) 
                         }
                     </Body> :
                     <div className="text-center mt-4">

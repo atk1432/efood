@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// import { Provider, useDispatch } from 'react-redux';
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom/client';
 import Header from './Header/Header';
 import Controller from './Controller/Controller';
@@ -20,14 +20,12 @@ import Login from './User/Login';
 
 // For authentication
 import GoogleCallback from './User/googleCallback';
+import Logout from './User/Logout';
 
 // For config
 import { apiOrigin } from './config';
 
-// For store user
-// import storeUser from './Redux/storeUser';
-// import { login } from './Redux/user';
-
+import storeUser from './Redux/storeUser';
 
 window.apiOrigin = apiOrigin; 
 
@@ -35,11 +33,11 @@ window.apiOrigin = apiOrigin;
 function App() {
 
     return (
-        <>
+        <Provider store={storeUser}>
             <Header />
             <Controller />
             <Outlet />
-        </>
+        </Provider>
     );
 }
 
@@ -65,6 +63,7 @@ root.render(
             </Route>
             <Route path="/login" element={ <Login /> } />
             <Route path='/login/google/redirect' element={ <GoogleCallback /> } />
+            <Route path="/logout" element={ <Logout /> } />
         </Routes>
     </BrowserRouter>
 );

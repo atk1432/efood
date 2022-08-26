@@ -45,7 +45,7 @@ function Info(props) {
     const options = [
         {
             name: 'Đăng xuất',
-            to: window.apiOrigin + '/auth/logout',
+            to: '/logout',
             icon: <i className="fa-solid fa-arrow-right-from-bracket"></i>
         },
         {
@@ -92,7 +92,7 @@ function User() {
 
     const user = useSelector(state => state.user);
     const [ showInfo, setShowInfo ] = useState(false);
-    const [ reRender, setReRender ] = useState(false);
+    // const [ reRender, setReRender ] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -107,12 +107,15 @@ function User() {
                     axios.get('/auth/refresh?token=' + token)
                         .then(response => {
                             Cookies.set('_sid', response.data.token, { expires: 1 });
-                            setReRender(!reRender);
+                            axios.get('/user')
+                                .then(response => {
+                                    dispatch(login({ data: response.data }))
+                                })
                         });
                 })
         }
         
-    }, [reRender])
+    }, [])
 
     return (
         <>

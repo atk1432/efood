@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import Brand from '../Header/Brand';
-import { apiOrigin } from '../config';
-import axios from 'axios';
+import axios from '../axiosApi';
 
 
 function Button(props) {
@@ -41,7 +40,7 @@ function Login() {
                     className="bg-light"
                     src="/icons8-google.svg"
                     onClick={() => {
-                        axios.get(apiOrigin + '/api/auth/google/redirect')
+                        axios.get('/auth/google/redirect')
                             .then((response) => {
                                 window.location.href = response.data.redirect_uri;
                             });

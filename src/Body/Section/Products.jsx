@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Product from './Product';
 import ProductLoading from './ProductLoading';
-import { apiOrigin } from '../../config';
 import axios from '../../axiosApi';
 
 
@@ -14,8 +13,7 @@ function Products() {
     const [ loaded, setLoaded ] = useState(false);
 
     const getData = (_limit) => {
-        axios.get(
-             '/products?offset=' + 
+        axios.get('/products?offset=' + 
             offset.current + '&limit=' + (_limit || limit.current)
         ).then(function (response) {
             setLoaded(true);

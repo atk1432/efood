@@ -12,7 +12,7 @@ function GoogleCallback() {
     useEffect(() => {
         var code = encodeURIComponent(params.get('code'));
 
-        axios.get(window.apiOrigin + '/api/auth/google/callback?code=' + code)
+        axios.get('/auth/google/callback?code=' + code)
             .then((response) => {
                 Cookies.set('_sid', response.data.token, { expires: 1 });
                 setRedirect(true);
