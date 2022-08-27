@@ -100,19 +100,14 @@ function User() {
         var token = Cookies.get('_sid')
 
         if (token) {
-            axios.get('/user')
+            axios.get('/auth/refresh?token=' + token)
                 .then(response => {
-                    dispatch(login({ data: response.data }))
-                }).catch(error => {
-                    axios.get('/auth/refresh?token=' + token)
+                    Cookies.set('_sid', response.data.token, { expires: 1 });
+                    axios.get('/user')
                         .then(response => {
-                            Cookies.set('_sid', response.data.token, { expires: 1 });
-                            axios.get('/user')
-                                .then(response => {
-                                    dispatch(login({ data: response.data }))
-                                })
-                        });
-                })
+                            dispatch(login({ data: response.data }))
+                        })
+                });
         }
         
     }, [])

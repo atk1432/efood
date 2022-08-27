@@ -44,7 +44,7 @@ function ButtonInteractions(props)  {
                 value={like}
                 check='like'
             >
-                { like == 'like' ? parseInt(props.like) + 1 : props.like }
+                { like == 'like' ? parseInt(props.like ?? 0) + 1 : props.like ?? 0 }
                 <i className="fa-solid fa-thumbs-up ms-2"></i>
             </ButtonInteraction>
             <ButtonInteraction 
@@ -52,7 +52,7 @@ function ButtonInteractions(props)  {
                 value={like}
                 check='dislike'
             >
-                { like == 'dislike' ? parseInt(props.dislike) + 1 : props.dislike }
+                { like == 'dislike' ? parseInt(props.dislike ?? 0) + 1 : props.dislike ?? 0 }
                 <i className="fa-solid fa-thumbs-down ms-2"></i>
             </ButtonInteraction>
         </>
@@ -124,7 +124,6 @@ function Comment(props) {
     const [ responses, setResponses ] = useState([]); // For fetch API response
     const [ response, setResponse ] = useState(false); // For write response
 
-
     return (
         <CommentHeader 
             name={ props.name } 
@@ -140,7 +139,14 @@ function Comment(props) {
                 </div> : <></>
             }
             <div className="CommentContent__Info">
-                <div>{ props.comment }</div>
+                <div>
+                    { props.comment.split('\n').map((line, index) => 
+                        <span key={index}>
+                            { line }
+                            <br />
+                        </span>
+                    ) }
+                </div>
             </div>
             <div className="CommentContent__Interaction mt-3 d-flex flex-wrap"> 
                 <ButtonInteractions like={props.like} dislike={props.dislike} />
@@ -216,7 +222,6 @@ function CommentInput(props) {
 
     const inputElement = useRef();
     const rate = useRef(0);
-
 
 
     return (
@@ -400,6 +405,7 @@ function Comments(props) {
                             comments.map((comment, index) => 
                                 <Comment 
                                     key={ index }
+                                    id={ comment.id }
                                     name={ comment.user.name }
                                     avatar={ comment.user.image }
                                     comment={ comment.comment }
