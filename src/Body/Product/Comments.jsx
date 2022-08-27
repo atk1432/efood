@@ -44,7 +44,7 @@ function ButtonInteractions(props)  {
                 value={like}
                 check='like'
             >
-                { like == 'like' ? parseInt(props.like ?? 0) + 1 : props.like ?? 0 }
+                { like === 'like' ? parseInt(props.like ?? 0) + 1 : props.like ?? 0 }
                 <i className="fa-solid fa-thumbs-up ms-2"></i>
             </ButtonInteraction>
             <ButtonInteraction 
@@ -52,7 +52,7 @@ function ButtonInteractions(props)  {
                 value={like}
                 check='dislike'
             >
-                { like == 'dislike' ? parseInt(props.dislike ?? 0) + 1 : props.dislike ?? 0 }
+                { like === 'dislike' ? parseInt(props.dislike ?? 0) + 1 : props.dislike ?? 0 }
                 <i className="fa-solid fa-thumbs-down ms-2"></i>
             </ButtonInteraction>
         </>
@@ -89,12 +89,31 @@ function CommentHeader(props) {
 function CommentResponse(props) {
 
     const [ show, setShow ] = useState(false);
+    // const [ responses, setResponses ] = useState([]);
 
     return (
         <div className="CommentContent__Response my-3 cursor-pointer">
             <Text 
                 weight={900}
-                onClick={() => setShow(!show)}
+                onClick={() => {
+                    if (props.responses.length === 0) {
+                        if (!props.responseMode) {
+                            axios.get(`/responses/${props.id}/comment`)
+                            .then(response => 
+                                props.setResponses(responses => 
+                                    [...props.responses, ...response.data])
+                            ) 
+                        } else {
+                            axios.get(`/responses/${props.id}/response`)
+                            .then(response => 
+                                props.setResponses(responses => 
+                                    [...props.responses, ...response.data])
+                            )
+                        }
+                    }
+
+                    setShow(!show)
+                }}
                 display='inline-block'
             >
                 {show ? 
@@ -104,12 +123,17 @@ function CommentResponse(props) {
                 { props.amount } phản hồi
             </Text>
             {show ?
-                props.response.map((comment, index) => 
+                props.responses.map((comment, index) => 
                     <Comment
                         key={ index }
-                        name={ comment.name }
+                        id={ comment.id }
+                        name={ comment.user.name }
+                        avatar={ comment.user.image }
                         comment={ comment.comment }
-                        response={ comment.response }
+                        countResponse={ comment.countResponse }
+                        like={ comment.like }
+                        dislike={ comment.dislike }
+                        imageSize={ 34 }
                         responseMode
                     />
                 ) : <></>
@@ -123,6 +147,7 @@ function Comment(props) {
 
     const [ responses, setResponses ] = useState([]); // For fetch API response
     const [ response, setResponse ] = useState(false); // For write response
+    const repStatus = useRef(); // Yep, i don't know how name it :)))
 
     return (
         <CommentHeader 
@@ -152,18 +177,32 @@ function Comment(props) {
                 <ButtonInteractions like={props.like} dislike={props.dislike} />
                 <span 
                     className="cursor-pointer"
-                    onClick={() => setResponse(!response)}
+                    onClick={() => {
+                        setResponse(!response)
+                        if (props.responseMode) {
+                            repStatus.current = true;
+                        }
+                    }}
                 >
                     Phản hồi
                 </span>
             </div>
             {response ?
-                <WriteComment responseMode /> : <></>
+                <WriteComment 
+                    responseMode 
+                    setResponses={setResponses}
+                    repStatus={repStatus}
+                    id={props.id}
+                /> : <></>
             }
-            {responses.length !== 0 ?  
+            {props.countResponse > 0 ?  
                 <CommentResponse 
-                    amount={props.responses} 
-                    response={responses}
+                    id={props.id}
+                    amount={props.countResponse} 
+                    responses={responses}
+                    repStatus={repStatus}
+                    setResponses={setResponses}
+                    responseMode={props.responseMode}
                 /> : <></>
             }
         </CommentHeader>
@@ -212,7 +251,7 @@ function CommentStars(props) {
 function CommentInput(props) {
 
     const [ focus, setFocus ] = useState(false);
-    const [ value, setValue ] = useState();
+    // const [ value, setValue ] = useState();
     const [ hasValue, setHasValue ] = useState(false);
     const [ hidden, setHidden ] = useState(props.hidden ?? true);
     const user = useSelector(state => state.user);
@@ -230,7 +269,7 @@ function CommentInput(props) {
                 <CommentStars 
                     responseMode={props.responseMode} 
                     setHidden={setHidden} 
-                    rate={rate} 
+                    rate={rate}     
                 />  : <></>
             }
             {!hidden || props.responseMode ? 
@@ -290,28 +329,50 @@ function CommentInput(props) {
                         <Text 
                             className="cursor-pointer"
                             onClick={(e) => {
-                                if (inputElement.current.innerText.length &&
-                                    rate.current != 0
+                                if (inputElement.current.innerText.length 
                                 ) {
-                                    axios.post(
-                                        `/products/${productId}/comments`, 
-                                        {
-                                            'comment': inputElement.current.innerText,
-                                            'rate': rate.current
-                                        }
-                                    ).then(response => 
-                                        setComments(comments => [ 
+                                    if (!props.responseMode) {
+                                        axios.post(
+                                            `/products/${productId}/comments`, 
                                             {
-                                                user: {
-                                                    name: 'You',
-                                                    image: user.image
+                                                'comment': inputElement.current.innerText,
+                                                'rate': rate.current
+                                            }
+                                        ).then(response => 
+                                            setComments(comments => [ 
+                                                {
+                                                    id: response.data.id,
+                                                    user: {
+                                                        name: 'You',
+                                                        image: user.image
+                                                    },
+                                                    comment: inputElement.current.innerText,
+                                                    rate: rate.current
                                                 },
-                                                comment: inputElement.current.innerText,
-                                                rate: rate.current
-                                            },
-                                            ...comments
-                                        ])
-                                    );
+                                                ...comments
+                                            ])
+                                        );
+                                    } else {
+                                        if (!props.repStatus.current) {
+                                            axios.post(`/responses/${props.id}/comment`,
+                                            {
+                                                'comment': inputElement.current.innerText
+                                            }).then(response => {
+                                                props.setResponses(responses => [
+                                                    response.data, ...responses
+                                                ])
+                                            })
+                                        } else {
+                                            axios.post(`/responses/${props.id}/response`,
+                                            {
+                                                'comment': inputElement.current.innerText
+                                            }).then(response => {
+                                                props.setResponses(responses => [
+                                                    response.data, ...responses
+                                                ])
+                                            })
+                                        } 
+                                    }
                                 }
                             }}
                         >
@@ -327,12 +388,17 @@ function CommentInput(props) {
 
 function WriteComment(props) {
 
-    const avatar = useSelector(state => state.user.image);
+    // const avatar = useSelector(state => state.user.image);
 
     return (
         <div className="Comment my-4 d-flex">
             <div className="CommentContent ms-3 w-100">
-                <CommentInput responseMode={props.responseMode} />
+                <CommentInput 
+                    responseMode={props.responseMode} 
+                    setResponses={props.setResponses}
+                    repStatus={props.repStatus}
+                    id={props.id}
+                />
             </div>
         </div>
     );
@@ -344,8 +410,8 @@ function Comments(props) {
 
     const [ comments, setComments ] = useState([]);
     const [ loaded, setLoaded ] = useState(false);
-    const [ countComments, setCountComments ] = useState(0);
-    const user = useSelector(state => state.user);
+    // const [ countComments, setCountComments ] = useState(0);
+    // const user = useSelector(state => state.user);
     const scrollEnter = useRef(false);
     const offset = useRef(1);
     const limit = useRef(4);
@@ -406,6 +472,7 @@ function Comments(props) {
                                 <Comment 
                                     key={ index }
                                     id={ comment.id }
+                                    countResponse={ comment.countResponse }
                                     name={ comment.user.name }
                                     avatar={ comment.user.image }
                                     comment={ comment.comment }

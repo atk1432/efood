@@ -102,7 +102,7 @@ function User() {
         if (token) {
             axios.get('/auth/refresh?token=' + token)
                 .then(response => {
-                    Cookies.set('_sid', response.data.token, { expires: 1 });
+                    Cookies.set('_sid', response.data.token, { expires: 1 / 24 });
                     axios.get('/user')
                         .then(response => {
                             dispatch(login({ data: response.data }))
