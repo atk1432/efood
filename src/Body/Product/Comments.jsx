@@ -41,22 +41,22 @@ function ButtonInteraction(props) {
 function ButtonInteractions(props)  {
 
     const [ like, setLike ] = useState();
-    const likeNumber = useRef(props.like);
-    const dislikeNumber = useRef(props.dislike);
+    const likeNumber = useRef(props.like ?? 0);
+    const dislikeNumber = useRef(props.dislike ?? 0);
 
     useEffect(() => {
         if (props.econ === 'like' || props.econ === 'dislike') {
             setLike(props.econ);
-
-            // props.econ === 'like' ? 
-            //     likeNumber.current += 1 :
-            //     dislikeNumber.current += 1
         }
     }, [])
 
     useEffect(() => {
 
         var verb = props.responseMode ? 'response' : 'comment';
+        
+        // const execute = () => {
+        //     if (props.getData) props.getData()
+        // };
 
         if (like === 'like') {
             axios.post(`/sendEcon/${verb}`, {
@@ -74,6 +74,7 @@ function ButtonInteractions(props)  {
                 id: props.id 
             }).then(response => {});
         }
+
 
     }, [like])
 
@@ -123,7 +124,12 @@ function ButtonInteractions(props)  {
 function CommentHeader(props) {
 
     return (
-        <div className="Comment my-4 d-flex">
+        <div 
+            className="Comment my-4"
+            style={{
+                display: props.display ? 'flex' : 'none'
+            }}
+        >
             <Image
                 width={props.imageSize ?? 45}
                 height={props.imageSize ?? 45}
@@ -151,27 +157,30 @@ function CommentResponse(props) {
     const [ show, setShow ] = useState(false);
     // const [ responses, setResponses ] = useState([]);
 
+    const getData = () => {
+        if (props.responses.length === 0) {
+            if (!props.responseMode) {
+                axios.get(`/responses/${props.id}/comment`)
+                .then(response => 
+                    props.setResponses(responses => 
+                        [...props.responses, ...response.data])
+                ) 
+            } else {
+                axios.get(`/responses/${props.id}/response`)
+                .then(response => 
+                    props.setResponses(responses => 
+                        [...props.responses, ...response.data])
+                )
+            }
+        }
+    }
+
     return (
         <div className="CommentContent__Response my-3 cursor-pointer">
             <Text 
                 weight={900}
                 onClick={() => {
-                    if (props.responses.length === 0) {
-                        if (!props.responseMode) {
-                            axios.get(`/responses/${props.id}/comment`)
-                            .then(response => 
-                                props.setResponses(responses => 
-                                    [...props.responses, ...response.data])
-                            ) 
-                        } else {
-                            axios.get(`/responses/${props.id}/response`)
-                            .then(response => 
-                                props.setResponses(responses => 
-                                    [...props.responses, ...response.data])
-                            )
-                        }
-                    }
-
+                    getData();
                     setShow(!show)
                 }}
                 display='inline-block'
@@ -182,7 +191,7 @@ function CommentResponse(props) {
                 }
                 { props.amount } phản hồi
             </Text>
-            {show ?
+            {
                 props.responses.map((comment, index) => 
                     <Comment
                         key={ index }
@@ -196,8 +205,9 @@ function CommentResponse(props) {
                         dislike={ comment.dislike }
                         imageSize={ 34 }
                         responseMode
+                        display={show}
                     />
-                ) : <></>
+                )
             }
         </div>
     );
@@ -221,6 +231,7 @@ function Comment(props) {
             name={ props.name } 
             avatar={ props.avatar }
             imageSize={props.responseMode ? props.imageSize : null}
+            display={props.display ?? true}
         >
             {!props.responseMode ? 
                 <div className="CommentContent__Review">
@@ -247,6 +258,7 @@ function Comment(props) {
                     econ={props.econ}
                     id={props.id}
                     responseMode={props.responseMode}
+                    getData={props.getData}
                 />
                 <span 
                     className="cursor-pointer"
