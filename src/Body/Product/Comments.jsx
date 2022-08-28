@@ -22,10 +22,18 @@ function ButtonInteraction(props) {
                 color: '#fff'
             } : {}}
             onClick={() => {
-                if (props.value ===  props.check)
+                if (props.value ===  props.check) {
                     props.setLike('');
-                else
+                } else {
                     props.setLike(props.check);
+
+                    if (props.check == 'like') {
+                        axios.post('/sendEcon/comment', {
+                            'like': true,
+                            'commentId': props.id 
+                        })
+                    }
+                }
             }}
         >
             { props.children }
@@ -43,6 +51,7 @@ function ButtonInteractions(props)  {
                 setLike={setLike}
                 value={like}
                 check='like'
+                id={props.id}
             >
                 { like === 'like' ? parseInt(props.like ?? 0) + 1 : props.like ?? 0 }
                 <i className="fa-solid fa-thumbs-up ms-2"></i>
@@ -51,6 +60,7 @@ function ButtonInteractions(props)  {
                 setLike={setLike}
                 value={like}
                 check='dislike'
+                id={props.id}
             >
                 { like === 'dislike' ? parseInt(props.dislike ?? 0) + 1 : props.dislike ?? 0 }
                 <i className="fa-solid fa-thumbs-down ms-2"></i>
@@ -149,6 +159,12 @@ function Comment(props) {
     const [ response, setResponse ] = useState(false); // For write response
     const repStatus = useRef(); // Yep, i don't know how name it :)))
 
+    useEffect(() => {
+        if (props.responseMode) {
+            repStatus.current = true;
+        }
+    }, [])
+
     return (
         <CommentHeader 
             name={ props.name } 
@@ -174,14 +190,15 @@ function Comment(props) {
                 </div>
             </div>
             <div className="CommentContent__Interaction mt-3 d-flex flex-wrap"> 
-                <ButtonInteractions like={props.like} dislike={props.dislike} />
+                <ButtonInteractions 
+                    like={props.like} 
+                    dislike={props.dislike} 
+                    id={props.id}
+                />
                 <span 
                     className="cursor-pointer"
                     onClick={() => {
                         setResponse(!response)
-                        if (props.responseMode) {
-                            repStatus.current = true;
-                        }
                     }}
                 >
                     Phản hồi
@@ -195,10 +212,12 @@ function Comment(props) {
                     id={props.id}
                 /> : <></>
             }
-            {props.countResponse > 0 ?  
+            {props.countResponse || responses.length > 0 ?  
                 <CommentResponse 
                     id={props.id}
-                    amount={props.countResponse} 
+                    amount={props.countResponse + (
+                        (responses.length == 0 ? props.countResponse : responses.length) - props.countResponse)
+                    } 
                     responses={responses}
                     repStatus={repStatus}
                     setResponses={setResponses}
@@ -262,6 +281,16 @@ function CommentInput(props) {
     const inputElement = useRef();
     const rate = useRef(0);
 
+    useEffect(() => {
+
+        const blur = () => {
+            window.removeEventListener('click', blur);
+            setFocus(false);        
+        }
+
+        window.addEventListener('click', blur);
+
+    }, [])
 
     return (
         <>
@@ -285,22 +314,21 @@ function CommentInput(props) {
                         style={{
                             outline: 0,
                             position: 'relative',
+                            borderBottom: '1px solid',
                             zIndex: 2
                         }}
                         contentEditable="true"
-                        onInput={() => {
+                        onInput={(e) => {
                             if (inputElement.current.innerText) {
                                 setHasValue(true)
                             } else {
                                 setHasValue(false);
                             }
                         }}
-                        onFocus={() => setFocus(true)}
-                        onBlur={() => 
-                            setTimeout(() => {
-                                setFocus(false)
-                            }, 100)
-                        }
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setFocus(true)
+                        }}
                     >
                     </div>
                     {!hasValue ? 
@@ -319,7 +347,8 @@ function CommentInput(props) {
                     <div className="d-flex justify-content-end mt-2 fw-bold">
                         <Text 
                             className="me-2 cursor-pointer"
-                            onClick={() => {
+                            onClick={(e) => {
+                                e.stopPropagation();
                                 setHasValue(false);
                                 inputElement.current.innerHTML = '';
                             }}
@@ -329,6 +358,7 @@ function CommentInput(props) {
                         <Text 
                             className="cursor-pointer"
                             onClick={(e) => {
+                                e.stopPropagation();
                                 if (inputElement.current.innerText.length 
                                 ) {
                                     if (!props.responseMode) {
@@ -338,7 +368,7 @@ function CommentInput(props) {
                                                 'comment': inputElement.current.innerText,
                                                 'rate': rate.current
                                             }
-                                        ).then(response => 
+                                        ).then(response => {
                                             setComments(comments => [ 
                                                 {
                                                     id: response.data.id,
@@ -351,28 +381,35 @@ function CommentInput(props) {
                                                 },
                                                 ...comments
                                             ])
-                                        );
+                                            inputElement.current.innerText = '';
+                                            setHasValue(false);
+                                        });
                                     } else {
+                                        const updateResponses = (response) => {
+                                            props.setResponses(responses => [
+                                                response.data, ...responses
+                                            ])
+
+                                            inputElement.current.innerText = '';
+
+                                            setHasValue(false);
+                                        }
+
                                         if (!props.repStatus.current) {
                                             axios.post(`/responses/${props.id}/comment`,
                                             {
                                                 'comment': inputElement.current.innerText
-                                            }).then(response => {
-                                                props.setResponses(responses => [
-                                                    response.data, ...responses
-                                                ])
-                                            })
+                                            }).then(updateResponses)
                                         } else {
                                             axios.post(`/responses/${props.id}/response`,
                                             {
                                                 'comment': inputElement.current.innerText
-                                            }).then(response => {
-                                                props.setResponses(responses => [
-                                                    response.data, ...responses
-                                                ])
-                                            })
+                                            }).then(updateResponses)
                                         } 
                                     }
+
+                                    // setTimeout(() => {
+                                    // }, 200)
                                 }
                             }}
                         >
