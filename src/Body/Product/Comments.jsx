@@ -24,15 +24,12 @@ function ButtonInteraction(props) {
             onClick={() => {
                 if (props.value ===  props.check) {
                     props.setLike('');
+                    props.onBlur();
+
                 } else {
                     props.setLike(props.check);
+                    props.onFocus();
 
-                    if (props.check == 'like') {
-                        axios.post('/sendEcon/comment', {
-                            'like': true,
-                            'commentId': props.id 
-                        })
-                    }
                 }
             }}
         >
@@ -44,6 +41,41 @@ function ButtonInteraction(props) {
 function ButtonInteractions(props)  {
 
     const [ like, setLike ] = useState();
+    const likeNumber = useRef(props.like);
+    const dislikeNumber = useRef(props.dislike);
+
+    useEffect(() => {
+        if (props.econ === 'like' || props.econ === 'dislike') {
+            setLike(props.econ);
+
+            // props.econ === 'like' ? 
+            //     likeNumber.current += 1 :
+            //     dislikeNumber.current += 1
+        }
+    }, [])
+
+    useEffect(() => {
+
+        var verb = props.responseMode ? 'response' : 'comment';
+
+        if (like === 'like') {
+            axios.post(`/sendEcon/${verb}`, {
+                like: 'like',
+                id: props.id 
+            }).then(response => {});
+        } else if (like === 'dislike') {
+            axios.post(`/sendEcon/${verb}`, {
+                like: 'dislike',
+                id: props.id 
+            }).then(response => {});
+        } else if (like === '') {
+            axios.post(`/sendEcon/${verb}`, {
+                like: '',
+                id: props.id 
+            }).then(response => {});
+        }
+
+    }, [like])
 
     return (
         <>
@@ -52,8 +84,17 @@ function ButtonInteractions(props)  {
                 value={like}
                 check='like'
                 id={props.id}
+                onFocus={() => {
+                    likeNumber.current += 1
+                    if (like == 'dislike') {
+                        dislikeNumber.current -= 1;
+                    }
+                }}
+                onBlur={() => {
+                    likeNumber.current -= 1
+                }}
             >
-                { like === 'like' ? parseInt(props.like ?? 0) + 1 : props.like ?? 0 }
+                { likeNumber.current }
                 <i className="fa-solid fa-thumbs-up ms-2"></i>
             </ButtonInteraction>
             <ButtonInteraction 
@@ -61,8 +102,17 @@ function ButtonInteractions(props)  {
                 value={like}
                 check='dislike'
                 id={props.id}
+                onFocus={() => {
+                    dislikeNumber.current += 1
+                    if (like == 'like') {
+                        likeNumber.current -= 1;
+                    }
+                }}
+                onBlur={() => {
+                    dislikeNumber.current -= 1
+                }}
             >
-                { like === 'dislike' ? parseInt(props.dislike ?? 0) + 1 : props.dislike ?? 0 }
+                { dislikeNumber.current }
                 <i className="fa-solid fa-thumbs-down ms-2"></i>
             </ButtonInteraction>
         </>
@@ -142,6 +192,7 @@ function CommentResponse(props) {
                         comment={ comment.comment }
                         countResponse={ comment.countResponse }
                         like={ comment.like }
+                        econ={ comment.econ }
                         dislike={ comment.dislike }
                         imageSize={ 34 }
                         responseMode
@@ -193,7 +244,9 @@ function Comment(props) {
                 <ButtonInteractions 
                     like={props.like} 
                     dislike={props.dislike} 
+                    econ={props.econ}
                     id={props.id}
+                    responseMode={props.responseMode}
                 />
                 <span 
                     className="cursor-pointer"
@@ -516,6 +569,7 @@ function Comments(props) {
                                     rate={ comment.rate }
                                     like={ comment.like }
                                     dislike={ comment.dislike }
+                                    econ={ comment.econ }
                                 />) 
                         }
                     </Body> :
