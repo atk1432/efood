@@ -2,12 +2,13 @@ function StarsReview(props) {
 
     const render = () => {
         if (props.rate != 0) {
-            var rate = parseInt(props.rate).toFixed(1);
+            var rate = parseFloat(props.rate).toFixed(1);
         } else {
             var rate = '0.0';
         }
 
         var output = [];
+        // console.log(props.rate);
 
         if (rate.length === 3) {
             var key = 0;

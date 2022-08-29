@@ -31,8 +31,12 @@ function Product(props) {
                 </Text>
                 <div style={{ margin: '12px 0' }}>
                     <Text className={styles.ProductInfo__Rate}>
-                        <StarsReview rate={ props.rate } />
-                        { props.rate }
+                        {parseInt(props.rate) !== 0 ?
+                            <>
+                                <StarsReview rate={ props.rate } />
+                                { props.rate }
+                            </> : <i>Chưa có đánh giá</i>
+                        }
                     </Text>
                 </div>
                 <Price>

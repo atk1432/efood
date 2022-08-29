@@ -194,7 +194,7 @@ function CommentResponse(props) {
             {
                 props.responses.map((comment, index) => 
                     <Comment
-                        key={ index }
+                        key={ comment.id }
                         id={ comment.id }
                         name={ comment.user.name }
                         avatar={ comment.user.image }
@@ -442,7 +442,11 @@ function CommentInput(props) {
                                                         image: user.image
                                                     },
                                                     comment: inputElement.current.innerText,
-                                                    rate: rate.current
+                                                    rate: rate.current,
+                                                    like: 0,
+                                                    dislike: 0,
+                                                    econ: null,
+                                                    countResponse: 0
                                                 },
                                                 ...comments
                                             ])
@@ -572,7 +576,7 @@ function Comments(props) {
                         {
                             comments.map((comment, index) => 
                                 <Comment 
-                                    key={ index }
+                                    key={ comment.id }
                                     id={ comment.id }
                                     countResponse={ comment.countResponse }
                                     name={ comment.user.name }
