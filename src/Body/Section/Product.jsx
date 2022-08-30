@@ -14,7 +14,7 @@ function Product(props) {
         }>
             <Image width={'100%'} radius={16} src={ props.image } />
             <div className={styles.ProductInfo}>
-                <Link to={ `/product/${props.id}` }>
+                <Link to={ `/products/${props.id}` }>
                     <Text 
                         className={
                             styles.ProductInfo__Name + ' text-truncate'

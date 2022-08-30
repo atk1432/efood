@@ -1,18 +1,20 @@
 import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { change, init } from '../../Redux/counterPrice';
+import { push, shift } from '../../Redux/log';
+import { fetchNumberCarts } from '../../Redux/carts';
+import storeUser from '../../Redux/storeUser';
 import { Link } from 'react-router-dom';
 import Image from '../../Share/Image';
 import Price from '../Section/Price';
 import Text from '../../Share/Text';
 import ToVND from '../../Utilities/ConvertToVND';
+import axios from '../../axiosApi';
 
 
 function CaculatePrice(props) {
 
     const [ number, setNumber ] = useState(props.number);
-
-    // const count = useSelector(state => state.counterPrice.value);
     const dispatch = useDispatch();
 
     return (
@@ -28,7 +30,7 @@ function CaculatePrice(props) {
                 style={{ width: 50 }} 
                 value={ number } 
                 onChange={(e) => {
-                    if (e.target.value < 0)
+                    if (e.target.value < 1)
                         return;
 
                     dispatch(change({
@@ -62,7 +64,7 @@ function CartItem(props) {
             </div>
             <div className="col col-8 ">                
                 <Link 
-                    to=""
+                    to={ `/products/${ props.productId }` }
                     className="text-truncate"
                     style={{
                         color: '#333',
@@ -82,12 +84,28 @@ function CartItem(props) {
                 <i 
                     className="fa-solid fa-xmark cursor-pointer fs-5"
                     onClick={() => {
-                        var dataset = [...props.dataset];
-                        dataset.splice(props.index, 1);
+                        axios.delete(`/carts/${props.id}`)
+                        .then(response => {
+                            var dataset = [...props.dataset];
+                            dataset.splice(props.index, 1);
 
-                        dispatch(init( dataset.map(data => data.number * data.price) ));
-                        props.setDataset(dataset);
+                            // console.log(push)
+                            storeUser.dispatch(push({ 
+                                type: 'success', 
+                                value: 'Đã xóa thành công'
+                            }));
 
+                            setTimeout(() => {
+                                storeUser.dispatch(shift({ 
+                                    type:'success',
+                                }))
+                            }, 3000)
+
+                            storeUser.dispatch(fetchNumberCarts());
+                            dispatch(init( dataset.map(data => data.number * data.price) ));
+
+                            props.setDataset(dataset);
+                        })
                     }}
                 ></i>
             </div>

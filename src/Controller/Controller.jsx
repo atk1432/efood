@@ -11,8 +11,6 @@ function Controller() {
     const cartsNumber = useSelector(state => state.carts.numbers);
     const user = useSelector(state => state.user.name);
 
-    console.log(cartsNumber);
-
     const renderItems = () => {
         var items = [
             {

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Provider } from 'react-redux';
+import React from 'react';
+import { Provider, useSelector } from 'react-redux';
 import ReactDOM from 'react-dom/client';
 import Header from './Header/Header';
 import Controller from './Controller/Controller';
@@ -17,6 +17,7 @@ import {
 import ProductContainer from './Body/Product/ProductContainer';
 import Cart from './Body/Cart/Cart';
 import Login from './User/Login';
+import Success from './Share/Log/Success';
 
 // For authentication
 import GoogleCallback from './User/googleCallback';
@@ -30,10 +31,29 @@ import storeUser from './Redux/storeUser';
 window.apiOrigin = apiOrigin; 
 
 
+function Log() {
+
+    const stack = useSelector(state => state.log.stack)
+
+    return (
+        <>
+            {stack.map((e, i) => {
+                if (e.type === 'success') {
+                    return (
+                        <Success key={i}>{ e.value }</Success>
+                    )
+                }
+            })}
+        </>
+    );  
+}
+
+
 function App() {
 
     return (
         <Provider store={storeUser}>
+            <Log />
             <Header />
             <Controller />
             <Outlet />
@@ -57,7 +77,7 @@ root.render(
                     />
                 </Route>
                 <Route path="/" element={ <Body container /> }>
-                    <Route path='/product/:id' element={ <ProductContainer /> } />
+                    <Route path='/products/:id' element={ <ProductContainer /> } />
                     <Route path="/cart" element={ <Cart /> } />
                 </Route>
             </Route>

@@ -1,10 +1,11 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { init } from '../../Redux/counterPrice';
 import CartItem from './CartItem';
 import ToVND from '../../Utilities/ConvertToVND';
 import Price from '../Section/Price';
 import { SectionContext } from './Cart';
+import axios from '../../axiosApi';
 
 
 function Input(props) {
@@ -57,72 +58,99 @@ function Total() {
 
     return (
         <div className="col col-12 mt-2 d-flex align-items-center">
-            <span className="fw-bold me-2">
+            <span className="fw-bold me-2 fs-5">
                 Tổng cộng: 
             </span>
-            <Price>
+            <Price size={26}>
                 { ToVND(count.reduce((total, data) => total + data, 0)) }
             </Price>
         </div>
     );
 }
 
+const inputs = [
+    {
+        label: 'Họ',
+        name: 'firstName',
+        width: '90%'
+    },
+    {
+        label: 'Tên',
+        name: 'lastName',
+        width: '90%'
+    },
+    {
+        label: 'Số điện thoại',
+        name: 'phone',
+        width: '90%'
+    },
+    {
+        label: 'Địa chỉ',
+        name: 'address',
+        width: '90%'
+    },
+    {
+        label: 'Thông tin cho shipper',
+        name: 'info',
+        textarea: true,
+        width: '90%',
+        noWeight: true
+    }
+];
+
+const InputContainer = memo(() => 
+    <div className="col col-md-4 col-12">
+        <form className="d-flex flex-wrap justify-content-center">
+            {inputs.map((input, index) => 
+                <Input 
+                    key={index}
+                    name={input.name}
+                    label={input.label}
+                    width={input.width}
+                    textarea={input.textarea}
+                    noWeight={input.noWeight}
+                />
+            )}
+        </form>
+    </div>
+)
+
 
 function PrepareOrder() {
 
-    const inputs = [
-        {
-            label: 'First name',
-            name: 'first_name',
-            width: '90%'
-        },
-        {
-            label: 'Last name',
-            name: 'last_name',
-            width: '90%'
-        },
-        {
-            label: 'Address',
-            name: 'address',
-            width: '90%'
-        },
-        {
-            label: 'Info',
-            name: 'info',
-            textarea: true,
-            width: '90%',
-            noWeight: true
-        }
-    ];
-
     const dispatch = useDispatch();
 
-    const [ dataset, setDataset ] = useState([
-        {
-            image: 'https://d1sag4ddilekf6.azureedge.net/compressed/merchants/5-CZBYRP6KRXJCEN/hero/f6f3e83b389a4355a7e9072a55cd0fbc_1659913137408522559.jpg',
-            name: "Bún gà ngon 74",
-            price: 25000,
-            number: 3        
-        },
-        {
-            image: 'https://d1sag4ddilekf6.azureedge.net/compressed/merchants/5-CZBYRP6KRXJCEN/hero/f6f3e83b389a4355a7e9072a55cd0fbc_1659913137408522559.jpg',
-            name: "Bún gà ngon 74",
-            price: 25000,
-            number: 3        
-        }
-    ]);
+    const [ dataset, setDataset ] = useState([]);
 
     const { setCurrent } = useContext(SectionContext);
 
     useEffect(() => {
 
-        var total = dataset.map(data => 
-            data.price * data.number
-        );        
 
         // console.log(total)
 
-        dispatch(init(total));
+        axios.get('/carts')
+            .then(response => {
+                var dataset = response.data.map(data => {
+                    return {
+                        id: data.id,
+                        productId: data.product.id,
+                        name: data.product.name,
+                        image: data.product.image,
+                        price: data.product.price,
+                        number: 1
+                    }   
+                });
+
+                setDataset(dataset);
+
+                var total = dataset.map(data => 
+                    data.price * data.number
+                );        
+                
+                dispatch(init(total));
+            });
+
 
     }, [])
 
@@ -130,26 +158,15 @@ function PrepareOrder() {
 
     return (
         <div className="row">
-            <div className="col col-md-4 col-12">
-                <form className="d-flex flex-wrap justify-content-center">
-                    {inputs.map((input, index) => 
-                        <Input 
-                            key={index}
-                            name={input.name}
-                            label={input.label}
-                            width={input.width}
-                            textarea={input.textarea}
-                            noWeight={input.noWeight}
-                        />
-                    )}
-                </form>
-            </div>
+            <InputContainer />
             <div className="col col-md-8 col-12 mt-3">
                 <div className="row gy-3">
                     {dataset.map((data, index) => 
                         <div className="col col-12" key={index}>
                             <CartItem 
                                 index={ index }
+                                id={ data.id }
+                                productId={ data.productId }
                                 image={ data.image }
                                 name={ data.name }
                                 price={ data.price }
