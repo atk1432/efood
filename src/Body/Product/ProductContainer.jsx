@@ -35,10 +35,12 @@ function ProductContainer() {
                 <Description _ref={buttonElement}>
                     { data.description }
                 </Description> 
-                <Comments 
-                    productId={data.id} 
-                    comments={data.comments}
-                />
+                <Provider store={storeUser}>
+                    <Comments 
+                        productId={data.id} 
+                        comments={data.comments}
+                    />
+                </Provider>
             </> :
             <ProductLoading />
     )

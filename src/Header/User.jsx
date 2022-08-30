@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { login } from '../Redux/user';
+import { fetchNumberCarts } from '../Redux/carts';
 import Image from '../Share/Image';
 import avatar from "../Asset/Img/avatar.jpeg";
 import Cookies from 'js-cookie';
@@ -105,7 +106,8 @@ function User() {
                     Cookies.set('_sid', response.data.token, { expires: 1 / 24 });
                     axios.get('/user')
                         .then(response => {
-                            dispatch(login({ data: response.data }))
+                            dispatch(login({ data: response.data }));
+                            dispatch(fetchNumberCarts());
                         })
                 });
         }

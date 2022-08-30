@@ -1,4 +1,6 @@
 import { useState, memo } from 'react';
+import { useSelector } from 'react-redux';
+// import carts from '../Redux/carts';
 import Item from './Item';
 import styles from '../Asset/Css/Controller.module.css';
 
@@ -6,6 +8,10 @@ import styles from '../Asset/Css/Controller.module.css';
 function Controller() {
 
     const [ active, setActive ] = useState(0);
+    const cartsNumber = useSelector(state => state.carts.numbers);
+    const user = useSelector(state => state.user.name);
+
+    console.log(cartsNumber);
 
     const renderItems = () => {
         var items = [
@@ -18,7 +24,7 @@ function Controller() {
                 name: 'Cart',
                 to: '/cart',
                 element: <i className="fa-solid fa-cart-shopping"></i>,
-                badge: 2
+                badge: user ? cartsNumber : 0
             },
             {
                 name: 'News',
@@ -71,5 +77,14 @@ function Controller() {
         </ul>
     );
 }
+
+
+// Controller = memo(Controller);
+
+// export default () => 
+//     <Provider store={carts}>
+//         <Controller />
+//     </Provider>
+// ;
 
 export default memo(Controller);

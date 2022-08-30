@@ -219,6 +219,7 @@ function Comment(props) {
     const [ responses, setResponses ] = useState([]); // For fetch API response
     const [ response, setResponse ] = useState(false); // For write response
     const repStatus = useRef(); // Yep, i don't know how name it :)))
+    const user = useSelector(state => state.user.name);
 
     useEffect(() => {
         if (props.responseMode) {
@@ -260,14 +261,15 @@ function Comment(props) {
                     responseMode={props.responseMode}
                     getData={props.getData}
                 />
-                <span 
+                { user ? <span 
                     className="cursor-pointer"
                     onClick={() => {
                         setResponse(!response)
                     }}
                 >
                     Phản hồi
-                </span>
+                </span> : <></>
+                }
             </div>
             {response ?
                 <WriteComment 
@@ -517,7 +519,7 @@ function Comments(props) {
     const [ comments, setComments ] = useState([]);
     const [ loaded, setLoaded ] = useState(false);
     // const [ countComments, setCountComments ] = useState(0);
-    // const user = useSelector(state => state.user);
+    const user = useSelector(state => state.user.name);
     const scrollEnter = useRef(false);
     const offset = useRef(1);
     const limit = useRef(4);
@@ -572,7 +574,10 @@ function Comments(props) {
                 </Header>
                 {loaded ?
                     <Body>
-                        <WriteComment name='You' responseMode={false} />
+                        {user ?
+                            <WriteComment name='You' responseMode={false} /> : 
+                            <i>Đăng nhập để bình luận</i>
+                        }
                         {
                             comments.map((comment, index) => 
                                 <Comment 

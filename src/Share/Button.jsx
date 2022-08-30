@@ -19,6 +19,7 @@ function Button(props) {
                 border: props.border
             }}
             to={ props.to ?? '#' }
+            onClick={props.onClick}
         >
             { props.children }
         </Link>

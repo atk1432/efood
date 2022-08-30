@@ -120,6 +120,8 @@ function PrepareOrder() {
             data.price * data.number
         );        
 
+        // console.log(total)
+
         dispatch(init(total));
 
     }, [])
