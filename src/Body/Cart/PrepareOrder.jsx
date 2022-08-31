@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, memo } from 'react';
+import { useState, useEffect, useContext, useRef, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { init } from '../../Redux/counterPrice';
 import CartItem from './CartItem';
@@ -6,11 +6,35 @@ import ToVND from '../../Utilities/ConvertToVND';
 import Price from '../Section/Price';
 import { SectionContext } from './Cart';
 import axios from '../../axiosApi';
+import { validation } from '../../Utilities/validation';
 
 
 function Input(props) {
 
     // console.log(props.noWeight)
+    const [ value, setValue ] = useState('');
+    const [ error, setError ] = useState('');
+
+    const blur = () => {
+
+        if (props.validation) {
+            var error = '';
+
+            for (var key in props.validation) {
+                if (key === 'required') {
+                    error = validation.required(value);
+                } else if (key === 'max') {
+                    error = validation.max(value, props.validation.max);
+                } else if (key === 'phone') {
+                    error = validation.phone(value);
+                }
+
+                if (error) break;
+            }
+
+            setError(error);
+        }
+    };
 
     return (
         <div 
@@ -20,30 +44,52 @@ function Input(props) {
             }}
         >
             <label htmlFor={props.name} className="mb-2">
-                { props.label }
+                { props.label } *
+                <span className="text-danger ms-2">
+                    { error }
+                </span>
             </label>
             {!props.textarea ?
-                <input 
-                    id={props.name} 
-                    name={props.name}
-                    placeholder={props.placeholder}
-                    className={`${!props.noWeight ? 'fw-bold' : ''} rounded`}
-                    style={{
-                        padding: '6px 12px',
-                        border: '1px solid',
-                        outline: 'none'
-                    }}
-                /> :
+                <div className="w-100 d-flex">
+                    {props.name === 'phone' ? 
+                        <div className="d-flex align-items-center px-2 rounded border border-dark">
+                            <img style={{
+                                width: 20
+                            }} src='/vietnam.png' className="mx-2" />
+                            +84
+                        </div> : <></>
+                    }
+                    <input 
+                        id={props.name} 
+                        name={props.name}
+                        placeholder={props.label}
+                        className={`${!props.noWeight ? 'fw-bold w-100' : ''} rounded`}
+                        style={{
+                            padding: '6px 12px',
+                            border: '1px solid',
+                            outline: 'none'
+                        }}
+                        value={value}
+                        onInput={(e) => {
+                            setValue(e.target.value)
+                            props._ref.current[props.name] = e.target.value
+                        }}
+                        onBlur={blur}
+                    /> 
+                </div> :
                 <textarea 
                     id={props.name} 
                     name={props.name}
-                    placeholder={props.placeholder}
+                    placeholder={props.label}
                     className={`${!props.noWeight ? 'fw-bold' : ''} rounded`}
                     style={{
                         padding: '6px 12px',
                         border: '1px solid',
                         outline: 'none'
                     }}
+                    value={value}
+                    onInput={(e) => setValue(e.target.value)}
+                    onBlur={blur}
                 >
                 </textarea>
             }
@@ -71,34 +117,55 @@ function Total() {
 const inputs = [
     {
         label: 'Họ',
-        name: 'firstName',
-        width: '90%'
+        name: 'firstname',
+        width: '90%',
+        validation: {
+            required: true,
+            max: 100
+        }
     },
     {
         label: 'Tên',
-        name: 'lastName',
-        width: '90%'
+        name: 'lastname',
+        width: '90%',
+        validation: {
+            required: true,
+            max: 100
+        }
     },
     {
         label: 'Số điện thoại',
         name: 'phone',
-        width: '90%'
+        width: '90%',
+        validation: {
+            required: true,
+            phone: true,
+            max: 20
+        },
+        example: '012345678'
     },
     {
         label: 'Địa chỉ',
         name: 'address',
-        width: '90%'
+        width: '90%',
+        validation: {
+            required: true,
+            max: 100
+        }
     },
     {
         label: 'Thông tin cho shipper',
-        name: 'info',
+        name: 'info_for_shipper',
         textarea: true,
         width: '90%',
-        noWeight: true
+        noWeight: true,
+        validation: {
+            max: 100
+        }
     }
 ];
 
-const InputContainer = memo(() => 
+const InputContainer = memo((props) => 
     <div className="col col-md-4 col-12">
         <form className="d-flex flex-wrap justify-content-center">
             {inputs.map((input, index) => 
@@ -109,6 +176,8 @@ const InputContainer = memo(() =>
                     width={input.width}
                     textarea={input.textarea}
                     noWeight={input.noWeight}
+                    validation={input.validation}
+                    _ref={props._ref}
                 />
             )}
         </form>
@@ -119,10 +188,10 @@ const InputContainer = memo(() =>
 function PrepareOrder() {
 
     const dispatch = useDispatch();
-
     const [ dataset, setDataset ] = useState([]);
-
     const { setCurrent } = useContext(SectionContext);
+    const fields = useRef({});
+    const products = useRef([]);
 
     useEffect(() => {
 
@@ -142,6 +211,13 @@ function PrepareOrder() {
                     }   
                 });
 
+                products.current = dataset.map(data => {
+                    return {
+                        product_id: data.id,
+                        amount: data.number
+                    }
+                })
+
                 setDataset(dataset);
 
                 var total = dataset.map(data => 
@@ -158,7 +234,7 @@ function PrepareOrder() {
 
     return (
         <div className="row">
-            <InputContainer />
+            <InputContainer _ref={fields} />
             <div className="col col-md-8 col-12 mt-3">
                 <div className="row gy-3">
                     {dataset.map((data, index) => 
@@ -171,6 +247,7 @@ function PrepareOrder() {
                                 name={ data.name }
                                 price={ data.price }
                                 number={ data.number }
+                                productsRef={ products }
                                 setDataset={setDataset}
                                 dataset={ dataset }
                             />
@@ -180,7 +257,16 @@ function PrepareOrder() {
                     <div className="col col-12 my-4 d-flex justify-content-center">
                         <button 
                             className="btn btn-primary btn-lg fw-bold"
-                            onClick={() => setCurrent(1)}
+                            disabled={dataset.length === 0 ? true : false}
+                            onClick={() => {
+                                var dataset = { 
+                                    ...fields.current,
+                                    products: products.current
+                                }
+
+                                axios.post('/orders', dataset)
+                                    .then(response => console.log(response.data))
+                            }}
                         >
                             Đặt hàng
                         </button>  

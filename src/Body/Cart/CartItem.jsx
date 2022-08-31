@@ -33,10 +33,16 @@ function CaculatePrice(props) {
                     if (e.target.value < 1)
                         return;
 
+                    props.productsRef.current[props.index] = {
+                        product_id: props.productId,
+                        amount: e.target.value
+                    };
+
                     dispatch(change({
                         price: e.target.value * parseInt(props.price),
                         index: props.index
                     }));
+
                     setNumber(e.target.value)
                 }}
             />
@@ -78,6 +84,8 @@ function CartItem(props) {
                     price={props.price} 
                     number={props.number} 
                     index={props.index}
+                    productsRef={props.productsRef}
+                    productId={props.productId}
                 />
             </div>
             <div className="col col-1 d-flex align-items-center">
