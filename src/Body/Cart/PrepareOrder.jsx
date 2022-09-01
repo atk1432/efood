@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useRef, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { init } from '../../Redux/counterPrice';
+import { success, fail } from '../../Redux/checkError';
 import CartItem from './CartItem';
 import ToVND from '../../Utilities/ConvertToVND';
 import Price from '../Section/Price';
@@ -14,6 +15,7 @@ function Input(props) {
     // console.log(props.noWeight)
     const [ value, setValue ] = useState('');
     const [ error, setError ] = useState('');
+    const dispatch = useDispatch();
 
     const blur = () => {
 
@@ -28,11 +30,17 @@ function Input(props) {
                 } else if (key === 'phone') {
                     error = validation.phone(value);
                 }
-
+ 
                 if (error) break;
             }
 
             setError(error);
+
+            if (error) {
+                dispatch(fail({ id: props.id }));
+            } else {
+                dispatch(success({ id: props.id }));
+            }
         }
     };
 
@@ -71,10 +79,33 @@ function Input(props) {
                         }}
                         value={value}
                         onInput={(e) => {
-                            setValue(e.target.value)
+                            setValue(e.target.value);
+
+                            var error = '';
+
+                            for (var key in props.validation) {
+                                if (key === 'required') {
+                                    error = validation.required(e.target.value);
+                                } else if (key === 'max') {
+                                    error = validation.max(e.target.value, props.validation.max);
+                                } else if (key === 'phone') {
+                                    error = validation.phone(e.target.value);
+                                }
+                 
+                                if (error) break;
+                            }
+
+                            setError(error);
+
+                            if (error) {
+                                dispatch(fail({ id: props.id }));
+                            } else {
+                                dispatch(success({ id: props.id }));
+                            }
+
                             props._ref.current[props.name] = e.target.value
                         }}
-                        onBlur={blur}
+                        // onBlur={blur}
                     /> 
                 </div> :
                 <textarea 
@@ -89,7 +120,7 @@ function Input(props) {
                     }}
                     value={value}
                     onInput={(e) => setValue(e.target.value)}
-                    onBlur={blur}
+                    // onBlur={blur}
                 >
                 </textarea>
             }
@@ -139,7 +170,6 @@ const inputs = [
         width: '90%',
         validation: {
             required: true,
-            phone: true,
             max: 20
         },
         example: '012345678'
@@ -171,6 +201,7 @@ const InputContainer = memo((props) =>
             {inputs.map((input, index) => 
                 <Input 
                     key={index}
+                    id={index}
                     name={input.name}
                     label={input.label}
                     width={input.width}
@@ -183,6 +214,35 @@ const InputContainer = memo((props) =>
         </form>
     </div>
 )
+
+const ButtonOrder = (props) => {
+
+    const { check } = useSelector(state => state.checkError);
+
+    console.log(check)
+
+    return (
+        <button 
+            className="btn btn-primary btn-lg fw-bold"
+            disabled={
+                props.dataset.length === 0 ? 
+                    true : 
+                    (check.every(e => e === true) ? false : true)
+            }
+            onClick={() => {
+                var dataset = { 
+                    ...props.fields.current,
+                    products: props.products.current
+                }
+
+                axios.post('/orders', props.dataset)
+                    .then(response => {})
+            }}
+        >
+            Đặt hàng
+        </button>  
+    )
+}
 
 
 function PrepareOrder() {
@@ -255,21 +315,11 @@ function PrepareOrder() {
                     )}
                     <Total />
                     <div className="col col-12 my-4 d-flex justify-content-center">
-                        <button 
-                            className="btn btn-primary btn-lg fw-bold"
-                            disabled={dataset.length === 0 ? true : false}
-                            onClick={() => {
-                                var dataset = { 
-                                    ...fields.current,
-                                    products: products.current
-                                }
-
-                                axios.post('/orders', dataset)
-                                    .then(response => console.log(response.data))
-                            }}
-                        >
-                            Đặt hàng
-                        </button>  
+                        <ButtonOrder 
+                            dataset={dataset} 
+                            fields={fields} 
+                            products={products}
+                        /> 
                     </div>
                 </div>
             </div>
