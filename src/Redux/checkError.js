@@ -18,10 +18,14 @@ const checkError = createSlice({
             var id = action.payload.id;
             state.check[id] = false;
             state.render = !state.render;
+        },
+
+        reset: state => {
+            state.check = [ false, false, false, false ];
         }
     }
 });
 
-export const { success, fail } = checkError.actions;
+export const { success, fail, reset } = checkError.actions;
 
 export default checkError.reducer;

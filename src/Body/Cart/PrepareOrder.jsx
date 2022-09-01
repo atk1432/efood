@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { init } from '../../Redux/counterPrice';
-import { success, fail } from '../../Redux/checkError';
+import { success, fail, reset } from '../../Redux/checkError';
 import CartItem from './CartItem';
 import ToVND from '../../Utilities/ConvertToVND';
 import Price from '../Section/Price';
@@ -101,9 +101,9 @@ function Input(props) {
                                 dispatch(fail({ id: props.id }));
                             } else {
                                 dispatch(success({ id: props.id }));
+                                props._ref.current[props.name] = e.target.value
                             }
 
-                            props._ref.current[props.name] = e.target.value
                         }}
                         // onBlur={blur}
                     /> 
@@ -119,7 +119,10 @@ function Input(props) {
                         outline: 'none'
                     }}
                     value={value}
-                    onInput={(e) => setValue(e.target.value)}
+                    onInput={(e) => {
+                        setValue(e.target.value);
+                        props._ref.current[props.name] = e.target.value;
+                    }}
                     // onBlur={blur}
                 >
                 </textarea>
@@ -219,8 +222,6 @@ const ButtonOrder = (props) => {
 
     const { check } = useSelector(state => state.checkError);
 
-    console.log(check)
-
     return (
         <button 
             className="btn btn-primary btn-lg fw-bold"
@@ -235,7 +236,7 @@ const ButtonOrder = (props) => {
                     products: props.products.current
                 }
 
-                axios.post('/orders', props.dataset)
+                axios.post('/orders', dataset)
                     .then(response => {})
             }}
         >
@@ -287,6 +288,7 @@ function PrepareOrder() {
                 dispatch(init(total));
             });
 
+        dispatch(reset());
 
     }, [])
 

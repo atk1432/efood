@@ -10,11 +10,22 @@ import Price from '../Section/Price';
 import Text from '../../Share/Text';
 import ToVND from '../../Utilities/ConvertToVND';
 import axios from '../../axiosApi';
+import Cookies from 'js-cookie';
 
 
 function CaculatePrice(props) {
 
-    const [ number, setNumber ] = useState(props.number);
+    const [ number, setNumber ] = useState(() => {
+        var number = Cookies.get('cart_number');
+
+        if (number) {
+            number = JSON.parse(number);
+
+            return number[props.cartId];
+        } else {
+            return props.number;
+        }
+    });
     const dispatch = useDispatch();
 
     return (
@@ -44,6 +55,21 @@ function CaculatePrice(props) {
                     }));
 
                     setNumber(e.target.value)
+
+                    var cartNumber = Cookies.get('cart_number');
+
+                    if (cartNumber) {
+                        cartNumber = JSON.parse(cartNumber);
+
+                        var json = JSON.stringify({ ...cartNumber, [props.cartId]: e.target.value });
+                        Cookies.set('cart_number', json, { expires: 7 })
+                    } else {
+                        Cookies.set(
+                            'cart_number', 
+                            JSON.stringify({ [props.cartId]: e.target.value }), 
+                            { expires: 7 }
+                        )
+                    }
                 }}
             />
             <Text size={15} className="mx-2">
@@ -86,6 +112,7 @@ function CartItem(props) {
                     index={props.index}
                     productsRef={props.productsRef}
                     productId={props.productId}
+                    cartId={props.id}
                 />
             </div>
             <div className="col col-1 d-flex align-items-center">
