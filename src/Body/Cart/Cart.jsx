@@ -3,6 +3,8 @@ import { Provider } from 'react-redux';
 import store from '../../Redux/store';
 import Text from '../../Share/Text';
 import PrepareOrder from './PrepareOrder';
+import Ordering from './Ordering/Ordering';
+import Cookies from 'js-cookie';
 
 
 export const SectionContext = createContext();
@@ -22,7 +24,10 @@ function CartSection(props) {
                 className={`fa-solid ${props.icon} d-block py-4 fs-4 ${props.color} transition`}
                 onMouseEnter={() => setEnter(true)}
                 onMouseLeave={() => setEnter(false)}
-                onClick={() => setCurrent(props.index)}
+                onClick={() => {
+                    setCurrent(props.index);
+                    Cookies.set('cart_current', props.index);
+                }}
                 style={enter || current == props.index ? {
                     background: '#eaeaea',
                     borderRadius: 20,
@@ -48,7 +53,16 @@ export default function Cart() {
         }
     ];
 
-    const [ current, setCurrent ] = useState(0);
+    const [ current, setCurrent ] = useState(() => {
+        var current = Cookies.get('cart_current');
+
+        if (current) {
+            return parseInt(current);
+        } else {
+            return 1;
+        }
+    });
+
 
     return (
         <Provider store={store}>
@@ -88,10 +102,26 @@ export default function Cart() {
                 <div className="col col-12 mt-5">
                     {
                         (function () {
-                            if (current == 0)
-                                return (
-                                    <PrepareOrder />
-                                );
+                            const components = [
+                                <PrepareOrder />,
+                                <Ordering />
+                            ];
+
+                            return (
+                                <>
+                                    {components.map((component, index) => 
+                                        <div 
+                                            className="row"
+                                            key={index}
+                                            style={{
+                                                display: current === index ? 'flex' : 'none'
+                                            }}
+                                        >
+                                            { component }
+                                        </div>
+                                    )}
+                                </>
+                            )
                         })() 
                     }
                 </div>

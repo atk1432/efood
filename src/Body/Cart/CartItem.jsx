@@ -21,7 +21,7 @@ function CaculatePrice(props) {
         if (number) {
             number = JSON.parse(number);
 
-            return number[props.cartId];
+            return number[props.cartId] ?? props.number;
         } else {
             return props.number;
         }

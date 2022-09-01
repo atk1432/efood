@@ -295,7 +295,7 @@ function PrepareOrder() {
     // console.log(dataset)
 
     return (
-        <div className="row">
+        <>
             <InputContainer _ref={fields} />
             <div className="col col-md-8 col-12 mt-3">
                 <div className="row gy-3">
@@ -325,8 +325,8 @@ function PrepareOrder() {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
-export default PrepareOrder;
+export default memo(PrepareOrder);
