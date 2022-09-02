@@ -17,12 +17,10 @@ function Success(props) {
         <>
             {!hidden ?
                 <div 
-                    className="alert alert-success position-fixed" 
+                    className="alert alert-success d-inline-block mb-2" 
                     role="alert"
                     style={{
-                        top: 90,
-                        zIndex: 100,
-                        right: 23,
+                        right: 0,
                         animation: 'fadeIn 3s'
                     }}
                 >

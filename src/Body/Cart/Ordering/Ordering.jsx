@@ -32,6 +32,7 @@ function Ordering() {
                             products={ order.products }
                             status={ order.status }
                             userInfo={ order.user_info }
+                            setOrders={ setOrders }
                         />
                     )}
                 </tbody>

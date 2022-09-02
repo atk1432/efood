@@ -36,15 +36,27 @@ function Log() {
     const stack = useSelector(state => state.log.stack)
 
     return (
-        <>
+        <div 
+            className="position-fixed d-flex flex-column  w-100"
+            style={{
+                top: 90,
+                zIndex: 100,
+                right: 23,
+            }}
+        >
             {stack.map((e, i) => {
                 if (e.type === 'success') {
                     return (
-                        <Success key={i}>{ e.value }</Success>
+                        <div key={i} style={{
+                            width: '100%',
+                            textAlign: 'end'
+                        }}>
+                            <Success>{ e.value }</Success>
+                        </div>
                     )
                 }
             })}
-        </>
+        </div>
     );  
 }
 
