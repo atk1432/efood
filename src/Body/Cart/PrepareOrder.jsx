@@ -274,7 +274,7 @@ function PrepareOrder() {
 
                 products.current = dataset.map(data => {
                     return {
-                        product_id: data.id,
+                        product_id: data.productId,
                         amount: data.number
                     }
                 })

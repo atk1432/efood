@@ -9,7 +9,7 @@ function Ordering() {
 
     useEffect(() => {
 
-        axios.get('/orders')
+        axios.get('/orders?status=1')
             .then(response => setOrders(response.data));
 
     }, []);
@@ -26,8 +26,12 @@ function Ordering() {
                 <tbody>
                     {orders.map((order, index) =>
                         <OrderingItem 
+                            key={ index }
                             id={ order.id }
-                            image={ order.product.image }
+                            createdAt={ order.createdAt }
+                            products={ order.products }
+                            status={ order.status }
+                            userInfo={ order.user_info }
                         />
                     )}
                 </tbody>

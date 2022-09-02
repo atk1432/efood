@@ -1,6 +1,10 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+const blacklists = [
+    'cart'
+]
+
 
 axios.interceptors.request.use(function (config) {
         
@@ -21,12 +25,13 @@ axios.interceptors.response.use(function (response) {
 }, function (error) {
     
     if (error.response.status == 401) {
-        // var token = Cookies.get('_sid');
-
-        // axios.get('/auth/refresh?token=' + token)
-        //     .then(response => {
-        //         Cookies.set('_sid', response.data.token, { expires: 1 });
-        //     });
+        // window.location.href = '/login
+        blacklists.forEach(data => {
+            if (window.location.pathname.split('/')[1] === data) {
+                window.location.href = '/login';
+                return;
+            }
+        })
 
     }
 })

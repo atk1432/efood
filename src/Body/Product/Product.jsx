@@ -58,7 +58,8 @@ function Product(props) {
             .then(response => {
                 if (response.data.length !== 0)
                     dispatch({ type: "GETTED" });
-            })
+            }).catch(error => {})
+
 
     }, [])
 
